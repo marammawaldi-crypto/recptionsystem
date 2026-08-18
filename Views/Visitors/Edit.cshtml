@@ -1,0 +1,287 @@
+
+@model ReceptionSystem.Models.Visitor
+
+@{
+    ViewData["Title"] = "تعديل الزائر";
+}
+
+<div class="visitors-page" dir="rtl">
+
+    <h1>تعديل الزائر</h1>
+
+    <h4>بيانات الزائر</h4>
+
+    <hr />
+
+    <div class="row">
+
+        <div class="col-md-4">
+
+            <form asp-action="Edit" method="post">
+
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger">
+                </div>
+
+                <input type="hidden" asp-for="Id" />
+
+
+                <!-- اسم الزائر -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="VisitorName"
+                           class="control-label">
+                        اسم الزائر
+                    </label>
+
+                    <input asp-for="VisitorName"
+                           class="form-control"
+                           dir="rtl" />
+
+                    <span asp-validation-for="VisitorName"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- تاريخ الزيارة -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="VisitDate"
+                           class="control-label">
+                        تاريخ الزيارة
+                    </label>
+
+                    <input asp-for="VisitDate"
+                           type="date"
+                           class="form-control" />
+
+                    <span asp-validation-for="VisitDate"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- وقت الدخول -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="CheckIn"
+                           class="control-label">
+                        وقت الدخول
+                    </label>
+
+                    <input asp-for="CheckIn"
+                           type="time"
+                           class="form-control" />
+
+                    <span asp-validation-for="CheckIn"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- وقت الخروج -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="CheckOut"
+                           class="control-label">
+                        وقت الخروج
+                    </label>
+
+                    <input asp-for="CheckOut"
+                           type="time"
+                           class="form-control" />
+
+                    <span asp-validation-for="CheckOut"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- الوجهة -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="Destination"
+                           class="control-label">
+                        الوجهة
+                    </label>
+
+                    <select asp-for="Destination"
+                            class="form-control"
+                            dir="rtl">
+
+                        <option value="">
+                            -- اختر الوجهة --
+                        </option>
+
+                        <option value="Finance/Cash">
+                            المالية / الصندوق
+                        </option>
+
+                        <option value="Administration">
+                            الإدارة
+                        </option>
+
+                        <option value="HR">
+                            الموارد البشرية
+                        </option>
+
+                        <option value="Financial Management">
+                            الإدارة المالية
+                        </option>
+
+                        <option value="Procurement">
+                            المشتريات
+                        </option>
+
+                        <option value="IT Department">
+                            قسم تكنولوجيا المعلومات
+                        </option>
+
+                        <option value="Legal Department">
+                            القسم القانوني
+                        </option>
+
+                        <option value="Sales">
+                            المبيعات
+                        </option>
+
+                        <option value="Operations">
+                            العمليات
+                        </option>
+
+                        <option value="Warehouse">
+                            المستودع
+                        </option>
+
+                        <option value="Others">
+                            أخرى
+                        </option>
+
+                    </select>
+
+                    <span asp-validation-for="Destination"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- رقم الهاتف -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="Phone"
+                           class="control-label">
+                        رقم الهاتف
+                    </label>
+
+                    <input asp-for="Phone"
+                           class="form-control"
+                           dir="rtl" />
+
+                    <span asp-validation-for="Phone"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- الغرض -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="Purpose"
+                           class="control-label">
+                        الغرض
+                    </label>
+
+                    <input asp-for="Purpose"
+                           class="form-control"
+                           dir="rtl" />
+
+                    <span asp-validation-for="Purpose"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- ملاحظات -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="Notes"
+                           class="control-label">
+                        ملاحظات
+                    </label>
+
+                    <input asp-for="Notes"
+                           class="form-control"
+                           dir="rtl" />
+
+                    <span asp-validation-for="Notes"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- زر الحفظ -->
+                <div class="form-group mb-3">
+
+                    <input type="submit"
+                           value="حفظ التعديلات"
+                           class="btn btn-primary" />
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <div>
+
+        <a asp-action="Index">
+            العودة إلى قائمة الزوار
+        </a>
+
+    </div>
+
+</div>
+
+<style>
+    /* RTL خاص بقسم Visitors */
+    .visitors-page {
+        direction: rtl;
+        text-align: right;
+    }
+
+    .visitors-page label {
+        text-align: right;
+        display: block;
+    }
+
+    .visitors-page .form-control {
+        text-align: right;
+    }
+
+    .visitors-page select {
+        direction: rtl;
+        text-align: right;
+    }
+</style>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+

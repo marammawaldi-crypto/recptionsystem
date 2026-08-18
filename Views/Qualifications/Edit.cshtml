@@ -1,0 +1,59 @@
+@model ReceptionSystem.Models.Qualification
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Qualification</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Degree" class="control-label"></label>
+                <input asp-for="Degree" class="form-control" />
+                <span asp-validation-for="Degree" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Specialization" class="control-label"></label>
+                <input asp-for="Specialization" class="form-control" />
+                <span asp-validation-for="Specialization" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="University" class="control-label"></label>
+                <input asp-for="University" class="form-control" />
+                <span asp-validation-for="University" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GraduationYear" class="control-label"></label>
+                <input asp-for="GraduationYear" class="form-control" />
+                <span asp-validation-for="GraduationYear" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="JobApplicationId" class="control-label"></label>
+                <input asp-for="JobApplicationId" class="form-control" />
+                <span asp-validation-for="JobApplicationId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="JobApplication" class="control-label"></label>
+                <input asp-for="JobApplication" class="form-control" />
+                <span asp-validation-for="JobApplication" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

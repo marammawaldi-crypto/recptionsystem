@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - ReceptionSystem</title>
+
+    <script type="importmap"></script>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ReceptionSystem.styles.css" asp-append-version="true" />
+
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            flex-shrink: 0;
+        }
+
+        .navbar {
+            margin-bottom: 0 !important;
+        }
+
+        .page-content {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .page-content > .container {
+            min-height: 100%;
+        }
+
+        main {
+            padding-bottom: 1rem;
+        }
+
+        footer {
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark dama-navbar">
+
+            <div class="container-fluid">
+
+                <a class="navbar-brand"
+                   asp-area=""
+                   asp-controller="Home"
+                   asp-action="Index">
+                    نظام الاستقبال
+                </a>
+
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+
+                    <span class="navbar-toggler-icon"></span>
+
+                </button>
+
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+
+                    <ul class="navbar-nav flex-grow-1">
+
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-area=""
+                               asp-controller="Home"
+                               asp-action="Index">
+                                الرئيسية
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-area=""
+                               asp-controller="Visitors"
+                               asp-action="Index">
+                                الزوار
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-area=""
+                               asp-controller="JobApplications"
+                               asp-action="Index">
+                                طلبات التوظيف
+                            </a>
+                        </li>
+
+                        <li class="nav-logo">
+                            <img src="~/images/minilogo.png" class="minilogo" />
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </nav>
+    </header>
+
+
+    <!-- منطقة محتوى الصفحة -->
+    <div class="page-content">
+
+        <div class="container">
+
+            <main role="main">
+
+                @RenderBody()
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    @* <!-- Footer -->
+    <footer class="border-top footer text-muted">
+
+        <div class="container text-center">
+
+            © 2026 DAMA FOR CONCRETE & CONSTRUCTION MATERIALS | IT DEPARTMENT
+
+        </div>
+
+    </footer> *@
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

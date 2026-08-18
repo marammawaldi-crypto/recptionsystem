@@ -1,0 +1,155 @@
+
+@model ReceptionSystem.Models.JobApplication
+
+@{
+    ViewData["Title"] = "تفاصيل طلب التوظيف";
+}
+
+<div class="job-application-page" dir="rtl">
+
+    <h1>تفاصيل طلب التوظيف</h1>
+
+    <div>
+        <h4>بيانات طلب التوظيف</h4>
+        <hr />
+
+        <dl class="row">
+
+            <dt class="col-sm-3">
+                رقم الطلب
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.ApplicationNumber)
+            </dd>
+
+
+            <dt class="col-sm-3">
+                تاريخ تقديم الطلب
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.ApplicationDate)
+            </dd>
+
+
+            <dt class="col-sm-3">
+                الاسم الكامل
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.FullName)
+            </dd>
+
+
+            <dt class="col-sm-3">
+                الجنس
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Gender)
+            </dd>
+
+
+            <dt class="col-sm-3">
+                الجنسية
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Nationality)
+            </dd>
+
+
+            <dt class="col-sm-3">
+                الوظيفة المطلوبة
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Position)
+            </dd>
+
+
+            <dt class="col-sm-3">
+                الراتب المتوقع
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.ExpectedSalary)
+            </dd>
+
+
+            <dt class="col-sm-3">
+                تاريخ المباشرة المتاح
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.AvailableStartDate)
+            </dd>
+
+
+            <dt class="col-sm-3">
+                يعمل حاليًا
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.CurrentlyWorking)
+            </dd>
+
+
+            <dt class="col-sm-3">
+                الحالة الصحية
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.HealthCondition)
+            </dd>
+
+
+            <dt class="col-sm-3">
+                السجل الجنائي
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.CriminalRecord)
+            </dd>
+
+
+            <dt class="col-sm-3">
+                ملاحظات
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.Notes)
+            </dd>
+
+        </dl>
+    </div>
+
+
+    <div class="mt-3">
+
+        <a asp-action="Edit"
+           asp-route-id="@Model.Id"
+           class="btn btn-warning">
+            تعديل
+        </a>
+
+        <a asp-action="Index"
+           class="btn btn-secondary">
+            العودة إلى قائمة طلبات التوظيف
+        </a>
+
+    </div>
+
+</div>
+
+<style>
+    /* RTL خاص بقسم Job Applications */
+    .job-application-page {
+        direction: rtl;
+        text-align: right;
+    }
+
+    .job-application-page dt,
+    .job-application-page dd {
+        text-align: right;
+    }
+
+    .job-application-page dt {
+        font-weight: 600;
+    }
+
+    .job-application-page .btn {
+        margin-left: 8px;
+        margin-right: 0;
+    }
+</style>
+```

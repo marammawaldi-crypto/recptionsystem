@@ -1,0 +1,70 @@
+@model ReceptionSystem.Models.JobApplication
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>هل أنت متأكد من حذف طلب التوظيف؟</h3>
+
+<div>
+    <h4>Job Application</h4>
+    <hr />
+
+    <dl class="row">
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ApplicationNumber)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ApplicationNumber)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ApplicationDate)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ApplicationDate)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.FullName)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.FullName)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Position)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Position)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Phone)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Phone)
+        </dd>
+
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <input type="submit" value="Delete" class="btn btn-danger" />
+
+        <a asp-action="Index" class="btn btn-secondary">
+            Back to List
+        </a>
+    </form>
+</div>

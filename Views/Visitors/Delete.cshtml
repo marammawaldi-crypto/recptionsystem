@@ -1,0 +1,102 @@
+```
+@model ReceptionSystem.Models.Visitor
+
+@{
+    ViewData["Title"] = "حذف زائر";
+}
+
+<div class="container-fluid mt-4" dir="rtl" lang="ar">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>حذف الزائر</h1>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <h3 class="text-danger mb-4">هل أنت متأكد من حذف هذا السجل؟</h3>
+
+            <dl class="row">
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.VisitorName)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.VisitorName)
+                </dd>
+            </dl>
+
+            <dl class="row">
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.VisitDate)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.VisitDate)
+                </dd>
+            </dl>
+
+            <dl class="row">
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.CheckIn)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.CheckIn)
+                </dd>
+            </dl>
+
+            <dl class="row">
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.CheckOut)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.CheckOut)
+                </dd>
+            </dl>
+
+            <dl class="row">
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Destination)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Destination)
+                </dd>
+            </dl>
+
+            <dl class="row">
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Phone)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Phone)
+                </dd>
+            </dl>
+
+            <dl class="row">
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Purpose)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Purpose)
+                </dd>
+            </dl>
+
+            <dl class="row">
+                <dt class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Notes)
+                </dt>
+                <dd class="col-sm-9">
+                    @Html.DisplayFor(model => model.Notes)
+                </dd>
+            </dl>
+
+            <hr />
+
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-danger">حذف</button>
+                <a asp-action="Index" class="btn btn-secondary">رجوع للقائمة</a>
+            </form>
+
+        </div>
+    </div>
+
+</div> 

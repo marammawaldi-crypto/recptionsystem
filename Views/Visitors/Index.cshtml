@@ -1,0 +1,143 @@
+
+@model IEnumerable<ReceptionSystem.Models.Visitor>
+
+@{
+    ViewData["Title"] = "الزوار";
+}
+
+<div class="container-fluid mt-4 visitors-page" dir="rtl" lang="ar">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>الزوار</h1>
+
+        <a asp-action="Create" class="btn btn-primary">
+            + إضافة زائر
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+
+        <div class="table-responsive dama-table-scroll">
+    <table class="table table-bordered table-striped table-hover align-middle text-nowrap visitors-table">
+
+    <thead class="dama-thead-sticky">
+        <tr>
+            <th>اسم الزائر</th>
+            <th>تاريخ الزيارة</th>
+            <th>وقت الدخول</th>
+            <th>وقت الخروج</th>
+            <th>الوجهة</th>
+            <th>رقم الهاتف</th>
+            <th>الغرض</th>
+            <th>ملاحظات</th>
+            <th>الإجراءات</th>
+        </tr>
+    </thead>
+
+            <tbody>
+
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>@item.VisitorName</td>
+
+                        <td>
+                            @item.VisitDate.ToShortDateString()
+                        </td>
+
+                        <td>
+                            @item.CheckIn.ToString(@"hh\:mm")
+                        </td>
+
+                        <td>
+                            @(item.CheckOut.HasValue
+                                ? item.CheckOut.Value.ToString(@"hh\:mm")
+                                : "-")
+                        </td>
+
+                        <td>@item.Destination</td>
+
+                        <td>@item.Phone</td>
+
+                        <td>@item.Purpose</td>
+
+                        <td>@item.Notes</td>
+
+                        <td class="actions-column">
+
+                            <a asp-action="Edit"
+                               asp-route-id="@item.Id"
+                               class="btn btn-sm btn-warning">
+                                تعديل
+                            </a>
+
+                            <a asp-action="Details"
+   asp-route-id="@item.Id"
+   class="btn btn-sm btn-details">
+    التفاصيل
+</a>
+
+                            <a asp-action="Delete"
+                               asp-route-id="@item.Id"
+                               class="btn btn-sm btn-danger">
+                                حذف
+                            </a>
+
+                        </td>
+
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+
+                    <td colspan="9" class="text-center">
+                        لا يوجد زوار.
+                    </td>
+
+                </tr>
+            }
+
+            </tbody>
+</table>
+
+        </div>
+
+      </div>
+    </div>
+
+</div>
+
+<style>
+    /* RTL خاص بقسم Visitors فقط */
+    .visitors-page {
+        direction: rtl;
+        text-align: right;
+    }
+
+    .visitors-page table {
+        direction: rtl;
+        width: 100%;
+    }
+
+    .visitors-page th,
+    .visitors-page td {
+        text-align: right;
+        vertical-align: middle;
+    }
+
+    .visitors-page .actions-column {
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    .visitors-page .btn {
+        margin-left: 4px;
+        margin-right: 0;
+    }
+</style> 

@@ -1,0 +1,10 @@
+/* Add any project-specific RTL overrides here */
+
+/* Ensure form labels align right */
+html[dir="rtl"] label { text-align: right; display: block; }
+
+/* Make card headers align right */
+html[dir="rtl"] .card h4 { text-align: right; }
+
+/* Ensure list-group items align right */
+html[dir="rtl"] .list-group-item { text-align: right; }

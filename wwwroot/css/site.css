@@ -1,0 +1,606 @@
+/* ===================================================== */
+/* BASIC */
+/* ===================================================== */
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+footer {
+    flex-shrink: 0;
+}
+
+
+/* ===================================================== */
+/* DAMA VARIABLES */
+/* ===================================================== */
+
+:root {
+    --dama-primary: #22278B;
+    --dama-primary-dark: #1A1F6E;
+    --dama-accent: #E8542E;
+    --dama-bg: #EAF0FB;
+    --dama-border: #DCE3F5;
+    --dama-text: #1E2233;
+}
+
+
+/* ===================================================== */
+/* FOCUS */
+/* ===================================================== */
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus,
+.form-select:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--dama-accent);
+    border-color: var(--dama-accent);
+}
+
+.form-floating > .form-control-plaintext::placeholder,
+.form-floating > .form-control::placeholder {
+    color: var(--bs-secondary-color);
+    text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder,
+.form-floating > .form-control:focus::placeholder {
+    text-align: start;
+}
+
+
+/* ===================================================== */
+/* RTL FORM FIXES */
+/* ===================================================== */
+
+[dir="rtl"] .form-check {
+    padding-right: 1.5em;
+    padding-left: 0;
+}
+
+[dir="rtl"] .form-check .form-check-input {
+    float: right;
+    margin-right: -1.5em;
+    margin-left: 0;
+}
+
+.form-check-input:checked {
+    background-color: var(--dama-primary);
+    border-color: var(--dama-primary);
+}
+
+
+/* ===================================================== */
+/* CARDS */
+/* ===================================================== */
+
+.card {
+    border: 1px solid var(--dama-border);
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(34, 39, 139, 0.06);
+    background-color: #ffffff;
+}
+
+.card h4 {
+    position: relative;
+    color: var(--dama-primary);
+    font-weight: 700;
+    padding-bottom: 0.6rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--dama-border);
+}
+
+.card h4::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    right: 0;
+    width: 48px;
+    height: 3px;
+    background-color: var(--dama-accent);
+}
+
+
+/* ===================================================== */
+/* BUTTONS */
+/* ===================================================== */
+
+.btn-primary {
+    background-color: var(--dama-primary);
+    border-color: var(--dama-primary);
+}
+
+.btn-primary:hover,
+.btn-primary:active {
+    background-color: var(--dama-primary-dark) !important;
+    border-color: var(--dama-primary-dark) !important;
+}
+
+.btn-danger {
+    background-color: var(--dama-accent);
+    border-color: var(--dama-accent);
+    color: #fff;
+}
+
+.btn-danger:hover,
+.btn-danger:active {
+    background-color: #C7431F !important;
+    border-color: #C7431F !important;
+}
+
+.btn-warning {
+    background-color: #5B6478;
+    border-color: #5B6478;
+    color: #fff;
+}
+
+.btn-warning:hover,
+.btn-warning:active {
+    background-color: #454C5C !important;
+    border-color: #454C5C !important;
+    color: #fff !important;
+}
+
+.btn-success {
+    background-color: var(--dama-primary);
+    border-color: var(--dama-primary);
+    color: #fff;
+}
+
+.btn-success:hover,
+.btn-success:active {
+    background-color: var(--dama-primary-dark) !important;
+    border-color: var(--dama-primary-dark) !important;
+}
+
+.btn-sm {
+    border-radius: 0.35rem;
+    font-weight: 500;
+    min-width: 70px;
+}
+
+.btn-print {
+    background-color: #6c757d;
+    color: white;
+    border: 1px solid #6c757d;
+}
+
+.btn-print:hover {
+    background-color: #5a6268;
+    color: white;
+}
+
+
+/* ===================================================== */
+/* NO CV BADGE */
+/* ===================================================== */
+
+.badge-no-cv {
+    display: inline-block;
+    padding: 0.4em 0.9em;
+    background-color: #EDEEF2;
+    color: #6C7280;
+    border: 1px solid #D8DAE3;
+    border-radius: 0.35rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    min-width: 70px;
+    text-align: center;
+}
+
+
+/* ===================================================== */
+/* TABLES */
+/* ===================================================== */
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead {
+    background-color: var(--dama-primary);
+    color: #fff;
+}
+
+.table thead th {
+    border-color: var(--dama-primary);
+    font-weight: 600;
+}
+
+[dir="rtl"] table {
+    direction: rtl;
+}
+
+[dir="rtl"] th,
+[dir="rtl"] td {
+    text-align: right;
+}
+
+
+/* ===================================================== */
+/* GENERAL TABLE SCROLL */
+/* طلبات التوظيف وباقي الجداول */
+/* ===================================================== */
+
+.dama-table-scroll {
+    width: 100%;
+    max-width: 100%;
+
+    max-height: 70vh;
+
+    overflow-x: auto;
+    overflow-y: auto;
+
+    position: relative;
+}
+
+
+/* ===================================================== */
+/* GENERAL STICKY TABLE HEADER */
+/* ===================================================== */
+
+.dama-thead-sticky th {
+    position: sticky !important;
+    top: 0 !important;
+
+    z-index: 20 !important;
+
+    background-color: #0d3b66 !important;
+    color: white !important;
+
+    border-color: var(--dama-primary-dark) !important;
+
+    font-weight: 600;
+    text-align: center;
+    vertical-align: middle;
+
+    white-space: nowrap;
+
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+
+/* ===================================================== */
+/* SECTION HEADINGS */
+/* ===================================================== */
+
+h2 {
+    color: var(--dama-primary);
+    font-weight: 700;
+}
+
+
+/* ===================================================== */
+/* LINKS */
+/* ===================================================== */
+
+a {
+    color: var(--dama-primary);
+}
+
+a:hover {
+    color: var(--dama-accent);
+}
+
+
+/* ===================================================== */
+/* NAVBAR */
+/* ===================================================== */
+
+.dama-navbar {
+    background-color: var(--dama-primary);
+    border-bottom: 3px solid var(--dama-accent);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dama-navbar .navbar-brand {
+    font-weight: 700;
+    color: #fff;
+}
+
+.dama-navbar .nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-weight: 500;
+}
+
+.dama-navbar .nav-link:hover,
+.dama-navbar .nav-link.active {
+    color: #fff !important;
+}
+
+.navbar {
+    direction: rtl;
+}
+
+.navbar .container-fluid {
+    direction: rtl;
+}
+
+.navbar-brand {
+    margin-right: 0;
+    margin-left: 1rem;
+}
+
+.navbar-nav {
+    padding-right: 0;
+    margin-right: 0 !important;
+    margin-left: auto;
+}
+
+
+/* ===================================================== */
+/* NAVBAR LOGO */
+/* ===================================================== */
+
+.nav-logo {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    display: flex;
+    align-items: center;
+}
+
+.minilogo {
+    width: 38px;
+    height: 38px;
+
+    object-fit: contain;
+    display: block;
+}
+
+
+/* ===================================================== */
+/* VISITORS PAGE */
+/* ===================================================== */
+
+.visitors-page .btn-details {
+    background-color: #272c8f;
+    border-color: #272c8f;
+    color: white;
+}
+
+.visitors-page .btn-details:hover {
+    background-color: #1e2375;
+    border-color: #1e2375;
+    color: white;
+}
+
+
+/* ===================================================== */
+/* GENERAL TABLE SCROLL */
+/* ===================================================== */
+
+.dama-table-scroll {
+    width: 100%;
+    max-width: 100%;
+    max-height: 500px;
+    overflow-x: auto;
+    overflow-y: auto;
+    position: relative;
+}
+
+
+/* ===================================================== */
+/* VISITORS TABLE */
+/* ===================================================== */
+
+.visitors-page .dama-table-scroll {
+    width: 100%;
+    max-width: 100%;
+    height: 500px;
+    max-height: 500px;
+    overflow-x: auto;
+    overflow-y: auto;
+    position: relative;
+    display: block;
+}
+
+.visitors-page .visitors-table {
+    min-width: 1100px;
+    width: max-content;
+    margin-bottom: 0;
+}
+
+
+/* ===================================================== */
+/* VISITORS STICKY HEADER */
+/* ===================================================== */
+
+.visitors-page .dama-thead-sticky th {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 20 !important;
+    background-color: #0d3b66 !important;
+    color: white !important;
+    border-color: #0d3b66 !important;
+    font-weight: 600;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+
+/* ===================================================== */
+/* VISITORS ACTIONS */
+/* ===================================================== */
+
+.visitors-page .actions-column {
+    white-space: nowrap;
+    text-align: center;
+}
+
+
+/* ===================================================== */
+/* VISITORS ACTIONS */
+/* ===================================================== */
+
+.visitors-page .actions-column {
+    white-space: nowrap;
+    text-align: center;
+}
+
+
+/* ===================================================== */
+/* WELCOME PAGE */
+/* ===================================================== */
+
+.dama-welcome-hero {
+    position: relative;
+
+    border-radius: 0.5rem;
+
+    overflow: hidden;
+
+    text-align: center;
+
+    width: 100%;
+
+    height: calc(100vh - 90px);
+
+    background-color: var(--dama-bg);
+}
+
+.dama-welcome-img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    display: block;
+
+    margin: 0 auto;
+}
+
+.dama-welcome-content {
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    width: 100%;
+    max-width: 100%;
+
+    padding: 0 1rem;
+
+    box-sizing: border-box;
+}
+
+.dama-brand-name {
+    font-family: Arial, Helvetica, sans-serif;
+
+    font-size: 2.4rem;
+
+    font-weight: 900;
+
+    letter-spacing: 2px;
+
+    color: var(--dama-primary);
+
+    margin: 0;
+
+    white-space: nowrap;
+}
+
+.dama-logo-icon {
+    width: 130px;
+
+    height: auto;
+
+    margin-bottom: 1rem;
+}
+
+.dama-brand-sub-ar {
+    font-family: 'Traditional Arabic', Tahoma, sans-serif;
+
+    font-size: 1.4rem;
+
+    font-weight: 700;
+
+    letter-spacing: 0.5px;
+
+    color: var(--dama-accent);
+
+    margin: 0.35rem 0 0.15rem;
+}
+
+.dama-brand-sub {
+    font-family: Arial, Helvetica, sans-serif;
+
+    font-size: 1.05rem;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+
+    color: var(--dama-accent);
+
+    margin: 0;
+}
+
+.dama-hero-link {
+    color: var(--dama-text);
+
+    margin-bottom: 0;
+}
+
+.dama-hero-link a {
+    color: var(--dama-primary);
+
+    font-weight: 600;
+}
+
+.dama-hero-link a:hover {
+    color: var(--dama-accent);
+}
+
+
+/* ===================================================== */
+/* FOOTER */
+/* ===================================================== */
+
+.footer {
+    position: absolute !important;
+
+    left: 0;
+    right: 0;
+
+    width: 65%;
+    max-width: 900px;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    padding: 5px 0;
+
+    text-align: center;
+}
+
+
+/* ===================================================== */
+/* CARD / PAGE TEXT */
+/* ===================================================== */
+
+.card h4::after {
+    right: 0;
+    left: auto;
+}

@@ -1,0 +1,186 @@
+@model ReceptionSystem.Models.JobApplication
+
+<div class="card p-3 mb-4">
+
+    <h4>اللغات</h4>
+
+    <div class="table-responsive">
+
+        <table class="table table-sm">
+
+            <thead>
+                <tr>
+                    <th>اللغة</th>
+                    <th>المحادثة</th>
+                    <th>الكتابة</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <!-- العربية -->
+                <tr>
+                    <td>
+                        <input type="hidden"
+                               name="Languages[0].LanguageName"
+                               value="العربية" />
+
+                        <input type="text"
+                               class="form-control"
+                               value="العربية"
+                               readonly />
+                    </td>
+
+                    <td>
+                        <select name="Languages[0].Speaking"
+                                class="form-control">
+
+                            <option value="">-- اختر المستوى --</option>
+                            <option value="ضعيف">ضعيف</option>
+                            <option value="مقبول">مقبول</option>
+                            <option value="جيد">جيد</option>
+                            <option value="ممتاز">ممتاز</option>
+
+                        </select>
+                    </td>
+
+                    <td>
+                        <select name="Languages[0].Writing"
+                                class="form-control">
+
+                            <option value="">-- اختر المستوى --</option>
+                            <option value="ضعيف">ضعيف</option>
+                            <option value="مقبول">مقبول</option>
+                            <option value="جيد">جيد</option>
+                            <option value="ممتاز">ممتاز</option>
+
+                        </select>
+                    </td>
+                </tr>
+
+
+                <!-- الإنجليزية -->
+                <tr>
+                    <td>
+                        <input type="hidden"
+                               name="Languages[1].LanguageName"
+                               value="الإنجليزية" />
+
+                        <input type="text"
+                               class="form-control"
+                               value="الإنجليزية"
+                               readonly />
+                    </td>
+
+                    <td>
+                        <select name="Languages[1].Speaking"
+                                class="form-control">
+
+                            <option value="">-- اختر المستوى --</option>
+                            <option value="ضعيف">ضعيف</option>
+                            <option value="مقبول">مقبول</option>
+                            <option value="جيد">جيد</option>
+                            <option value="ممتاز">ممتاز</option>
+
+                        </select>
+                    </td>
+
+                    <td>
+                        <select name="Languages[1].Writing"
+                                class="form-control">
+
+                            <option value="">-- اختر المستوى --</option>
+                            <option value="ضعيف">ضعيف</option>
+                            <option value="مقبول">مقبول</option>
+                            <option value="جيد">جيد</option>
+                            <option value="ممتاز">ممتاز</option>
+
+                        </select>
+                    </td>
+                </tr>
+
+
+                <!-- الفرنسية -->
+                <tr>
+                    <td>
+                        <input type="hidden"
+                               name="Languages[2].LanguageName"
+                               value="الفرنسية" />
+
+                        <input type="text"
+                               class="form-control"
+                               value="الفرنسية"
+                               readonly />
+                    </td>
+
+                    <td>
+                        <select name="Languages[2].Speaking"
+                                class="form-control">
+
+                            <option value="">-- اختر المستوى --</option>
+                            <option value="ضعيف">ضعيف</option>
+                            <option value="مقبول">مقبول</option>
+                            <option value="جيد">جيد</option>
+                            <option value="ممتاز">ممتاز</option>
+
+                        </select>
+                    </td>
+
+                    <td>
+                        <select name="Languages[2].Writing"
+                                class="form-control">
+
+                            <option value="">-- اختر المستوى --</option>
+                            <option value="ضعيف">ضعيف</option>
+                            <option value="مقبول">مقبول</option>
+                            <option value="جيد">جيد</option>
+                            <option value="ممتاز">ممتاز</option>
+
+                        </select>
+                    </td>
+                </tr>
+
+
+                <!-- لغة إضافية اختيارية -->
+                <tr>
+                    <td>
+                        <input type="text"
+                               name="Languages[3].LanguageName"
+                               class="form-control"
+                               placeholder="اكتب اللغة" />
+                    </td>
+
+                    <td>
+                        <select name="Languages[3].Speaking"
+                                class="form-control">
+
+                            <option value="">-- اختر المستوى --</option>
+                            <option value="ضعيف">ضعيف</option>
+                            <option value="مقبول">مقبول</option>
+                            <option value="جيد">جيد</option>
+                            <option value="ممتاز">ممتاز</option>
+
+                        </select>
+                    </td>
+
+                    <td>
+                        <select name="Languages[3].Writing"
+                                class="form-control">
+
+                            <option value="">-- اختر المستوى --</option>
+                            <option value="ضعيف">ضعيف</option>
+                            <option value="مقبول">مقبول</option>
+                            <option value="جيد">جيد</option>
+                            <option value="ممتاز">ممتاز</option>
+
+                        </select>
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

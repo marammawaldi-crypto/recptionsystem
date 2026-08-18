@@ -1,0 +1,49 @@
+@model ReceptionSystem.Models.JobApplication
+
+<div class="card p-3" dir="rtl" lang="ar">
+
+    <h4>الدورات والتدريب</h4>
+
+    <div class="table-responsive">
+
+        <table class="table table-sm">
+
+            <thead>
+                <tr>
+                    <th>اسم الدورة / التدريب</th>
+                    <th>الجهة / المؤسسة</th>
+                    <th>المدة</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @for (int i = 0; i < 3; i++)
+                {
+                    <tr>
+
+                        <td>
+                            <input name="Courses[@(i)].CourseName"
+                                   class="form-control" />
+                        </td>
+
+                        <td>
+                            <input name="Courses[@(i)].Organization"
+                                   class="form-control" />
+                        </td>
+
+                        <td>
+                            <input name="Courses[@(i)].Duration"
+                                   class="form-control" />
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

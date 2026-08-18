@@ -1,0 +1,46 @@
+@model ReceptionSystem.Models.JobApplication
+
+<div class="card p-3" dir="rtl" lang="ar">
+    <h4>المؤهلات</h4>
+
+    <div class="table-responsive">
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>الدرجة / المؤهل</th>
+                    <th>الجامعة / المعهد</th>
+                    <th>التخصص</th>
+                    <th>سنة التخرج</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @for (int i = 0; i < 3; i++)
+                {
+                    <tr>
+                        <td>
+                            <input name="Qualifications[@(i)].Degree"
+                                   class="form-control" />
+                        </td>
+
+                        <td>
+                            <input name="Qualifications[@(i)].University"
+                                   class="form-control" />
+                        </td>
+
+                        <td>
+                            <input name="Qualifications[@(i)].Specialization"
+                                   class="form-control" />
+                        </td>
+
+                        <td>
+                            <input name="Qualifications[@(i)].GraduationYear"
+                                   type="text"
+                                   class="form-control" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

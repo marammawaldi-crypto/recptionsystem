@@ -1,0 +1,490 @@
+
+@model ReceptionSystem.Models.JobApplication
+
+@{
+    ViewData["Title"] = "تعديل طلب التوظيف";
+}
+
+<div class="job-application-page" dir="rtl">
+
+    <h1>تعديل طلب التوظيف</h1>
+
+    <h4>بيانات طلب التوظيف</h4>
+
+    <hr />
+
+    <div class="row">
+
+        <div class="col-md-4">
+
+            <form asp-action="Edit" method="post">
+
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger">
+                </div>
+
+                <input type="hidden" asp-for="Id" />
+
+
+                <!-- رقم الطلب -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="ApplicationNumber"
+                           class="control-label">
+                        رقم الطلب
+                    </label>
+
+                    <input asp-for="ApplicationNumber"
+                           class="form-control"
+                           dir="rtl" />
+
+                    <span asp-validation-for="ApplicationNumber"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- تاريخ تقديم الطلب -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="ApplicationDate"
+                           class="control-label">
+                        تاريخ تقديم الطلب
+                    </label>
+
+                    <input asp-for="ApplicationDate"
+                           class="form-control" />
+
+                    <span asp-validation-for="ApplicationDate"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- الاسم الكامل -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="FullName"
+                           class="control-label">
+                        الاسم الكامل
+                    </label>
+
+                    <input asp-for="FullName"
+                           class="form-control"
+                           dir="rtl" />
+
+                    <span asp-validation-for="FullName"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- الجنس -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="Gender"
+                           class="control-label">
+                        الجنس
+                    </label>
+
+                    <input asp-for="Gender"
+                           class="form-control"
+                           dir="rtl" />
+
+                    <span asp-validation-for="Gender"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- الجنسية -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="Nationality"
+                           class="control-label">
+                        الجنسية
+                    </label>
+
+                    <input asp-for="Nationality"
+                           class="form-control"
+                           dir="rtl" />
+
+                    <span asp-validation-for="Nationality"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- مكان الولادة -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="PlaceOfBirth"
+                           class="control-label">
+                        مكان الولادة
+                    </label>
+
+                    <input asp-for="PlaceOfBirth"
+                           class="form-control"
+                           dir="rtl" />
+
+                    <span asp-validation-for="PlaceOfBirth"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- تاريخ الميلاد -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="DateOfBirth"
+                           class="control-label">
+                        تاريخ الميلاد
+                    </label>
+
+                    <input asp-for="DateOfBirth"
+                           type="date"
+                           class="form-control" />
+
+                    <span asp-validation-for="DateOfBirth"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- الرقم الوطني -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="NationalNumber"
+                           class="control-label">
+                        الرقم الوطني
+                    </label>
+
+                    <input asp-for="NationalNumber"
+                           class="form-control"
+                           dir="rtl" />
+
+                    <span asp-validation-for="NationalNumber"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- الحالة الاجتماعية -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="MaritalStatus"
+                           class="control-label">
+                        الحالة الاجتماعية
+                    </label>
+
+                    <input asp-for="MaritalStatus"
+                           class="form-control"
+                           dir="rtl" />
+
+                    <span asp-validation-for="MaritalStatus"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- العنوان -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="Address"
+                           class="control-label">
+                        العنوان
+                    </label>
+
+                    <input asp-for="Address"
+                           class="form-control"
+                           dir="rtl" />
+
+                    <span asp-validation-for="Address"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- رقم الهاتف -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="Phone"
+                           class="control-label">
+                        رقم الهاتف
+                    </label>
+
+                    <input asp-for="Phone"
+                           class="form-control"
+                           dir="rtl" />
+
+                    <span asp-validation-for="Phone"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- البريد الإلكتروني -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="Email"
+                           class="control-label">
+                        البريد الإلكتروني
+                    </label>
+
+                    <input asp-for="Email"
+                           type="email"
+                           class="form-control"
+                           dir="ltr" />
+
+                    <span asp-validation-for="Email"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- رخصة القيادة -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="DrivingLicense"
+                           class="control-label">
+                        رخصة القيادة
+                    </label>
+
+                    <input asp-for="DrivingLicense"
+                           class="form-control"
+                           dir="rtl" />
+
+                    <span asp-validation-for="DrivingLicense"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- الوظيفة المطلوبة -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="Position"
+                           class="control-label">
+                        الوظيفة المطلوبة
+                    </label>
+
+                    <input asp-for="Position"
+                           class="form-control"
+                           dir="rtl" />
+
+                    <span asp-validation-for="Position"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- الراتب المتوقع -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="ExpectedSalary"
+                           class="control-label">
+                        الراتب المتوقع
+                    </label>
+
+                    <input asp-for="ExpectedSalary"
+                           class="form-control" />
+
+                    <span asp-validation-for="ExpectedSalary"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- تاريخ المباشرة المتاح -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="AvailableStartDate"
+                           class="control-label">
+                        تاريخ المباشرة المتاح
+                    </label>
+
+                    <input asp-for="AvailableStartDate"
+                           type="date"
+                           class="form-control" />
+
+                    <span asp-validation-for="AvailableStartDate"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- يعمل حاليًا -->
+                <div class="form-group mb-3 form-check">
+
+                    <input asp-for="CurrentlyWorking"
+                           class="form-check-input" />
+
+                    <label asp-for="CurrentlyWorking"
+                           class="form-check-label">
+                        يعمل حاليًا
+                    </label>
+
+                    <span asp-validation-for="CurrentlyWorking"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- الحالة الصحية -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="HealthCondition"
+                           class="control-label">
+                        الحالة الصحية
+                    </label>
+
+                    <input asp-for="HealthCondition"
+                           class="form-control"
+                           dir="rtl" />
+
+                    <span asp-validation-for="HealthCondition"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- السجل الجنائي -->
+                <div class="form-group mb-3 form-check">
+
+                    <input asp-for="CriminalRecord"
+                           class="form-check-input" />
+
+                    <label asp-for="CriminalRecord"
+                           class="form-check-label">
+                        السجل الجنائي
+                    </label>
+
+                    <span asp-validation-for="CriminalRecord"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- ملاحظات -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="Notes"
+                           class="control-label">
+                        ملاحظات
+                    </label>
+
+                    <input asp-for="Notes"
+                           class="form-control"
+                           dir="rtl" />
+
+                    <span asp-validation-for="Notes"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- مسار السيرة الذاتية -->
+                <div class="form-group mb-3">
+
+                    <label asp-for="CvFilePath"
+                           class="control-label">
+                        ملف السيرة الذاتية
+                    </label>
+
+                    <input asp-for="CvFilePath"
+                           class="form-control"
+                           dir="ltr" />
+
+                    <span asp-validation-for="CvFilePath"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- زر الحفظ -->
+                <div class="form-group mb-3">
+
+                    <input type="submit"
+                           value="حفظ التعديلات"
+                           class="btn btn-primary" />
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <div>
+
+        <a asp-action="Index">
+            العودة إلى قائمة طلبات التوظيف
+        </a>
+
+    </div>
+
+</div>
+
+<style>
+    /* RTL خاص بقسم Job Applications */
+    .job-application-page {
+        direction: rtl;
+        text-align: right;
+    }
+
+    .job-application-page label {
+        text-align: right;
+        display: block;
+    }
+
+    .job-application-page .form-control {
+        text-align: right;
+    }
+
+    .job-application-page input[type="email"],
+    .job-application-page input[asp-for="CvFilePath"] {
+        direction: ltr;
+    }
+
+    .job-application-page .form-check {
+        padding-right: 1.5em;
+        padding-left: 0;
+    }
+
+    .job-application-page .form-check-input {
+        float: right;
+        margin-right: -1.5em;
+        margin-left: 0;
+    }
+</style>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

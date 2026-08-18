@@ -1,0 +1,115 @@
+```cshtml
+@model ReceptionSystem.Models.Visitor
+
+@{
+    ViewData["Title"] = "تفاصيل الزائر";
+}
+
+<div class="visitors-page" dir="rtl">
+
+    <h1>تفاصيل الزائر</h1>
+
+    <div>
+        <h4>بيانات الزائر</h4>
+        <hr />
+
+        <dl class="row">
+
+            <dt class="col-sm-2">
+                اسم الزائر
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.VisitorName)
+            </dd>
+
+            <dt class="col-sm-2">
+                تاريخ الزيارة
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.VisitDate)
+            </dd>
+
+            <dt class="col-sm-2">
+                وقت الدخول
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CheckIn)
+            </dd>
+
+            <dt class="col-sm-2">
+                وقت الخروج
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.CheckOut)
+            </dd>
+
+            <dt class="col-sm-2">
+                الوجهة
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Destination)
+            </dd>
+
+            <dt class="col-sm-2">
+                رقم الهاتف
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Phone)
+            </dd>
+
+            <dt class="col-sm-2">
+                الغرض
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Purpose)
+            </dd>
+
+            <dt class="col-sm-2">
+                ملاحظات
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Notes)
+            </dd>
+
+        </dl>
+    </div>
+
+    <div class="mt-3">
+
+        <a asp-action="Edit"
+           asp-route-id="@Model?.Id"
+           class="btn btn-warning">
+            تعديل
+        </a>
+
+        <a asp-action="Index"
+           class="btn btn-secondary">
+            العودة إلى قائمة الزوار
+        </a>
+
+    </div>
+
+</div>
+
+<style>
+    /* RTL خاص بصفحة Visitors */
+    .visitors-page {
+        direction: rtl;
+        text-align: right;
+    }
+
+    .visitors-page dt,
+    .visitors-page dd {
+        text-align: right;
+    }
+
+    .visitors-page dt {
+        font-weight: 600;
+    }
+
+    .visitors-page .btn {
+        margin-left: 8px;
+        margin-right: 0;
+    }
+</style>
+```

@@ -1,0 +1,253 @@
+@model IEnumerable<ReceptionSystem.Models.JobApplication>
+
+@{
+    ViewData["Title"] = "طلبات التوظيف";
+}
+
+<div class="container-fluid mt-4" dir="rtl" lang="ar">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>طلبات التوظيف</h1>
+
+        <a asp-action="Create" class="btn btn-primary">
+            + إنشاء جديد
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <div class="table-responsive dama-table-scroll">
+
+                <table class="table table-bordered table-striped table-hover align-middle text-nowrap">
+
+                    <thead class="dama-thead-sticky">
+                        <tr>
+                            <th>رقم الطلب</th>
+
+                            <th>تاريخ الطلب</th>
+
+                            <th>الاسم الكامل</th>
+
+                            <th>الجنس</th>
+
+                            <th>الجنسية</th>
+
+                            <th>مكان الولادة</th>
+
+                            <th>تاريخ الميلاد</th>
+
+                            <th>الرقم القومي</th>
+
+                            <th>الحالة الاجتماعية</th>
+
+                            <th>العنوان</th>
+
+                            <th>الهاتف</th>
+
+                            <th>البريد الإلكتروني</th>
+
+                            <th>رخصة القيادة</th>
+
+                            <th>الوظيفة المتقدم لها</th>
+
+                            <th>الراتب المتوقع</th>
+
+                            <th>تاريخ مباشرة العمل</th>
+
+                            <th>يعمل حالياً</th>
+
+                            <th>الحالة الصحية</th>
+
+                            <th>سوابق قضائية</th>
+
+                            <th>ملاحظات</th>
+
+                            <th>السيرة الذاتية</th>
+
+                            <th>الإجراءات</th>
+
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ApplicationNumber)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ApplicationDate)
+                                </td>
+
+                                <td>
+                                    <strong>
+                                        @Html.DisplayFor(modelItem => item.FullName)
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Gender)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Nationality)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.PlaceOfBirth)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.DateOfBirth)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.NationalNumber)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.MaritalStatus)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Address)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Phone)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Email)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.DrivingLicense)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Position)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ExpectedSalary)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.AvailableStartDate)
+                                </td>
+
+                                <td class="text-center">
+                                    @if (item.CurrentlyWorking)
+                                    {
+                                        <span class="badge bg-success">
+                                            Yes
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">
+                                            No
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.HealthCondition)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CriminalRecord)
+                                </td>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Notes)
+                                </td>
+
+                                <td>
+                                    @if (item.CvFileData != null && item.CvFileData.Length > 0)
+                                    {
+                                        <a asp-action="DownloadCv" asp-route-id="@item.Id" class="btn btn-success btn-sm">عرض السيرة</a>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-no-cv">No CV</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <div class="btn-group" role="group">
+
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">تعديل</a>
+
+                                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-id="@item.Id">حذف</button>
+                                        <!-- تصدير Excel -->
+                                        <a asp-action="ExportToExcel"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-success">
+                                            EXPORT
+                                        </a>
+                                        <!-- طباعة -->
+                                        <a asp-action="Print"
+                                           asp-route-id="@item.Id"
+                                           target="_blank"
+                                           class="btn btn-sm btn-print">
+                                            طباعة
+                                        </a>
+                                    </div>
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true" dir="rtl" lang="ar">
+        <div class="modal-dialog">
+            <div class="modal-content text-end">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">تأكيد الحذف</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+                </div>
+                <div class="modal-body">
+                    هل أنت متأكد من حذف هذا الطلب؟
+                </div>
+                <div class="modal-footer">
+                    <form asp-action="Delete" method="post" id="deleteForm" class="m-0 p-0">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" id="deleteId" value="" />
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="submit" class="btn btn-danger">حذف</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var confirmDeleteModal = document.getElementById('confirmDeleteModal');
+                if (confirmDeleteModal) {
+                    confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+                        var button = event.relatedTarget;
+                        var id = button.getAttribute('data-id');
+                        var input = document.getElementById('deleteId');
+                        if (input) input.value = id;
+                    });
+                }
+            });
+    </script>
+
+</div>

@@ -1,0 +1,54 @@
+@model ReceptionSystem.Models.JobApplication
+
+<div class="card p-3" dir="rtl" lang="ar">
+    <h4>الخبرات العملية</h4>
+
+    <div class="table-responsive">
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>جهة العمل</th}
+                    <th>المسمى الوظيفي</th>
+                    <th>من</th>
+                    <th>إلى</th>
+                    <th>آخر راتب</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @for (int i = 0; i < 3; i++)
+                {
+                    <tr>
+                        <td>
+                            <input name="Experiences[@(i)].CompanyName"
+                                   class="form-control" />
+                        </td>
+
+                        <td>
+                            <input name="Experiences[@(i)].JobTitle"
+                                   class="form-control" />
+                        </td>
+
+                        <td>
+                            <input name="Experiences[@(i)].FromDate"
+                                   type="date"
+                                   class="form-control" />
+                        </td>
+
+                        <td>
+                            <input name="Experiences[@(i)].ToDate"
+                                   type="date"
+                                   class="form-control" />
+                        </td>
+
+                        <td>
+                            <input name="Experiences[@(i)].LastSalary"
+                                   type="text"
+                                   class="form-control" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

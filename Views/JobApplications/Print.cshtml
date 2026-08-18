@@ -1,0 +1,394 @@
+﻿@model ReceptionSystem.Models.JobApplication
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="utf-8" />
+
+    <title>طلب توظيف - @Model.ApplicationNumber</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            text-align: right;
+            margin: 30px;
+            color: #222;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            margin-bottom: 5px;
+        }
+
+        .section-title {
+            background: #e9ecef;
+            padding: 10px;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            border: 1px solid #ccc;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: right;
+        }
+
+        th {
+            background: #f5f5f5;
+            font-weight: bold;
+        }
+
+        .print-button {
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            border: none;
+            background: #0d6efd;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        @@media print {
+            .print-button {
+                display: none;
+            }
+
+            body {
+                margin: 10mm;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <button class="print-button" onclick="window.print()">
+        طباعة
+    </button>
+
+    <div class="header">
+        <h1>طلب توظيف</h1>
+
+        <div>
+            رقم الطلب:
+            <strong>@Model.ApplicationNumber</strong>
+        </div>
+    </div>
+
+
+    <!-- المعلومات الشخصية -->
+
+    <div class="section-title">
+        المعلومات الشخصية
+    </div>
+
+    <table>
+
+        <tr>
+            <th>الاسم الكامل</th>
+            <td>@Model.FullName</td>
+        </tr>
+
+        <tr>
+            <th>الجنس</th>
+            <td>@Model.Gender</td>
+        </tr>
+
+        <tr>
+            <th>الجنسية</th>
+            <td>@Model.Nationality</td>
+        </tr>
+
+        <tr>
+            <th>مكان الولادة</th>
+            <td>@Model.PlaceOfBirth</td>
+        </tr>
+
+        <tr>
+            <th>تاريخ الميلاد</th>
+            <td>@Model.DateOfBirth</td>
+        </tr>
+
+        <tr>
+            <th>الرقم الوطني</th>
+            <td>@Model.NationalNumber</td>
+        </tr>
+
+        <tr>
+            <th>الحالة الاجتماعية</th>
+            <td>@Model.MaritalStatus</td>
+        </tr>
+
+        <tr>
+            <th>العنوان</th>
+            <td>@Model.Address</td>
+        </tr>
+
+        <tr>
+            <th>رقم الهاتف</th>
+            <td>@Model.Phone</td>
+        </tr>
+
+        <tr>
+            <th>البريد الإلكتروني</th>
+            <td>@Model.Email</td>
+        </tr>
+
+    </table>
+
+
+    <!-- معلومات الوظيفة -->
+
+    <div class="section-title">
+        معلومات الوظيفة
+    </div>
+
+    <table>
+
+        <tr>
+            <th>الوظيفة المتقدم لها</th>
+            <td>@Model.Position</td>
+        </tr>
+
+        <tr>
+            <th>الراتب المتوقع</th>
+            <td>@Model.ExpectedSalary</td>
+        </tr>
+
+        <tr>
+            <th>تاريخ مباشرة العمل</th>
+            <td>@Model.AvailableStartDate</td>
+        </tr>
+
+        <tr>
+            <th>رخصة القيادة</th>
+            <td>@Model.DrivingLicense</td>
+        </tr>
+
+        <tr>
+            <th>يعمل حالياً</th>
+            <td>
+                @(Model.CurrentlyWorking ? "نعم" : "لا")
+            </td>
+        </tr>
+
+    </table>
+
+
+    <!-- المؤهلات -->
+
+    <div class="section-title">
+        المؤهلات العلمية
+    </div>
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>الدرجة العلمية</th>
+                <th>الاختصاص</th>
+                <th>الجامعة</th>
+                <th>سنة التخرج</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model.Qualifications ?? new List<ReceptionSystem.Models.Qualification>())
+            {
+                <tr>
+                    <td>@item.Degree</td>
+                    <td>@item.Specialization</td>
+                    <td>@item.University</td>
+                    <td>@item.GraduationYear</td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+
+    <!-- الدورات -->
+
+    <div class="section-title">
+        الدورات التدريبية
+    </div>
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>اسم الدورة</th>
+                <th>الجهة المنظمة</th>
+                <th>المدة</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model.Courses ?? new List<ReceptionSystem.Models.Course>())
+            {
+                <tr>
+                    <td>@item.CourseName</td>
+                    <td>@item.Organization</td>
+                    <td>@item.Duration</td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+
+    <!-- الخبرات -->
+
+    <div class="section-title">
+        الخبرات العملية
+    </div>
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>الشركة</th>
+                <th>المسمى الوظيفي</th>
+                <th>من</th>
+                <th>إلى</th>
+                <th>آخر راتب</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model.Experiences ?? new List<ReceptionSystem.Models.Experience>())
+            {
+                <tr>
+                    <td>@item.CompanyName</td>
+                    <td>@item.JobTitle</td>
+                    <td>@item.FromDate</td>
+
+                    <td>
+                        @(item.ToDate.HasValue
+                            ? item.ToDate.Value.ToString("dd/MM/yyyy")
+                            : "حتى الآن")
+                    </td>
+
+                    <td>@item.LastSalary</td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+
+    <!-- اللغات -->
+
+    <div class="section-title">
+        اللغات
+    </div>
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>اللغة</th>
+                <th>المحادثة</th>
+                <th>الكتابة</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model.Languages ?? new List<ReceptionSystem.Models.Language>())
+            {
+                <tr>
+                    <td>@item.LanguageName</td>
+                    <td>@item.Speaking</td>
+                    <td>@item.Writing</td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+
+    <!-- مهارات الكمبيوتر -->
+
+    <div class="section-title">
+        مهارات الكمبيوتر
+    </div>
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>المهارة</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model.ComputerSkills ?? new List<ReceptionSystem.Models.ComputerSkill>())
+            {
+                <tr>
+                    <td>@item.SkillName</td>
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+
+    <!-- معلومات إضافية -->
+
+    <div class="section-title">
+        معلومات إضافية
+    </div>
+
+    <table>
+
+        <tr>
+            <th>الحالة الصحية</th>
+            <td>@Model.HealthCondition</td>
+        </tr>
+
+        <tr>
+            <th>سوابق قضائية</th>
+            <td>
+                @(Model.CriminalRecord ? "نعم" : "لا")
+            </td>
+        </tr>
+
+        <tr>
+            <th>ملاحظات</th>
+            <td>@Model.Notes</td>
+        </tr>
+
+    </table>
+
+</body>
+
+</html>

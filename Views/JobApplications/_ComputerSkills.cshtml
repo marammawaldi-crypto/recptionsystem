@@ -1,0 +1,28 @@
+@model ReceptionSystem.Models.JobApplication
+
+<div class="card p-3" dir="rtl" lang="ar">
+    <h4>مهارات الحاسوب</h4>
+
+    <div class="table-responsive">
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>البرنامج / المهارة</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @for (int i = 0; i < 3; i++)
+                {
+                    <tr>
+                        <td>
+                            <input name="ComputerSkills[@(i)].SkillName"
+                                   class="form-control"
+                                   placeholder="e.g., MS Office" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

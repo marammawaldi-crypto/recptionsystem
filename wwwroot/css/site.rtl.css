@@ -1,0 +1,18 @@
+html[dir="rtl"] body { direction: rtl; }
+/* Align text to the end by default for RTL */
+html[dir="rtl"] .text-end, html[dir="rtl"] .text-right { text-align: right !important; }
+/* Utility to reverse float if needed */
+html[dir="rtl"] .float-start { float: right !important; }
+html[dir="rtl"] .float-end { float: left !important; }
+/* Use logical properties where possible: */
+html[dir="rtl"] .mr-3 { margin-inline-start: 0.75rem !important; }
+html[dir="rtl"] .ml-3 { margin-inline-end: 0.75rem !important; }
+
+/* Example: make navbar items align to start (which is right in RTL) */
+html[dir="rtl"] .navbar .navbar-nav { text-align: right; }
+
+/* Adjust any custom sidebar styles */
+html[dir="rtl"] .border-end { border-start: 1px solid #dee2e6 !important; border-end: none !important; }
+
+/* Flip icons if needed */
+html[dir="rtl"] .icon-flip { transform: scaleX(-1); }
