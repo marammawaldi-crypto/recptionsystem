@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ReceptionSystem.Models;
 
 namespace ReceptionSystem.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -18,7 +19,6 @@ namespace ReceptionSystem.Data
         public DbSet<Experience> Experiences { get; set; }
         public DbSet<Language> Languages { get; set; }
         public DbSet<ComputerSkill> ComputerSkills { get; set; }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
