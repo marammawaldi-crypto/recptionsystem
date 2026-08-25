@@ -30,10 +30,17 @@ namespace ReceptionSystem.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
             if (!ModelState.IsValid)
                 return View(model);
+
+            var user = await _userManager.FindByNameAsync(model.UserName);
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "المستخدم غير موجود");
+                return View(model);
+            }
 
             var result = await _signInManager.PasswordSignInAsync(
                 model.UserName,
@@ -43,19 +50,25 @@ namespace ReceptionSystem.Controllers
 
             if (result.Succeeded)
             {
-                if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
-                    return Redirect(model.ReturnUrl);
+                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    return Redirect(returnUrl);
 
                 return RedirectToAction("Index", "Home");
             }
 
             if (result.IsLockedOut)
             {
-                ModelState.AddModelError(string.Empty, "تم قفل الحساب مؤقتًا بسبب محاولات دخول خاطئة متكررة");
+                ModelState.AddModelError(string.Empty, "تم قفل الحساب");
                 return View(model);
             }
 
-            ModelState.AddModelError(string.Empty, "اسم المستخدم أو كلمة المرور غير صحيحة");
+            if (result.RequiresTwoFactor)
+            {
+                ModelState.AddModelError(string.Empty, "يتطلب مصادقة بخطوتين");
+                return View(model);
+            }
+
+            ModelState.AddModelError(string.Empty, "كلمة المرور خاطئة");
             return View(model);
         }
 

@@ -8,9 +8,21 @@
     <div class="card shadow p-4" style="width: 400px;">
         <h3 class="text-center mb-4" style="color: navy;">تسجيل الدخول</h3>
 
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger" role="alert">
+                @foreach (var modelState in ViewData.ModelState.Values)
+                {
+                    @foreach (var error in modelState.Errors)
+                    {
+                        <div>@error.ErrorMessage</div>
+                    }
+                }
+            </div>
+        }
+
         <form asp-controller="Account" asp-action="Login" method="post">
-            <input type="hidden" asp-for="ReturnUrl" />
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+            <input type="hidden" name="ReturnUrl" value="@(Model?.ReturnUrl ?? string.Empty)" />
 
             <div class="mb-3">
                 <label asp-for="UserName" class="form-label"></label>

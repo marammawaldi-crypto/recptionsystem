@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ReceptionSystem.Models;
 
 namespace ReceptionSystem.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<IdentityUser, IdentityRole, string>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -19,10 +21,9 @@ namespace ReceptionSystem.Data
         public DbSet<Language> Languages { get; set; }
         public DbSet<ComputerSkill> ComputerSkills { get; set; }
 
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(modelBuilder); // لازم يفضل قبل أي كود تاني عشان Identity يعمل جداوله
 
             modelBuilder.Entity<DrivingLicenseType>().HasData(
                 new DrivingLicenseType { Id = 1, Category = "A" },
