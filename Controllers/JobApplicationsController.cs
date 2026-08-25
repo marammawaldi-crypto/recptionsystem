@@ -314,7 +314,14 @@ namespace ReceptionSystem.Controllers
                 return NotFound();
             }
 
-            var job = await _context.JobApplications.FindAsync(id.Value);
+            var job = await _context.JobApplications
+                .Include(j => j.Qualifications)
+                .Include(j => j.Courses)
+                .Include(j => j.Experiences)
+                .Include(j => j.Languages)
+                .Include(j => j.ComputerSkills)
+                .FirstOrDefaultAsync(j => j.Id == id.Value);
+
             if (job == null)
             {
                 return NotFound();

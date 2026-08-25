@@ -1,487 +1,510 @@
-
 @model ReceptionSystem.Models.JobApplication
 
 @{
     ViewData["Title"] = "تعديل طلب التوظيف";
 }
 
-<div class="job-application-page" dir="rtl">
+<div class="container" dir="rtl">
 
-    <h1>تعديل طلب التوظيف</h1>
+    <h2 class="mb-4">تعديل طلب التوظيف</h2>
 
-    <h4>بيانات طلب التوظيف</h4>
+    <form asp-controller="JobApplications"
+          asp-action="Edit"
+          method="post"
+          enctype="multipart/form-data">
 
-    <hr />
+        @Html.AntiForgeryToken()
 
-    <div class="row">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <div class="col-md-4">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="ApplicationNumber" />
+        <input type="hidden" asp-for="ApplicationDate" />
 
-            <form asp-action="Edit" method="post">
 
-                @Html.AntiForgeryToken()
+        <!-- ===================================================== -->
+        <!-- المعلومات الشخصية -->
+        <!-- ===================================================== -->
 
-                <div asp-validation-summary="ModelOnly"
-                     class="text-danger">
+        <div class="card p-3 mb-4">
+            <h4>المعلومات الشخصية</h4>
+            <div class="row">
+
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="FullName" class="control-label">الاسم الكامل</label>
+                    <input asp-for="FullName" class="form-control" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
                 </div>
 
-                <input type="hidden" asp-for="Id" />
-
-
-                <!-- رقم الطلب -->
-                <div class="form-group mb-3">
-
-                    <label asp-for="ApplicationNumber"
-                           class="control-label">
-                        رقم الطلب
-                    </label>
-
-                    <input asp-for="ApplicationNumber"
-                           class="form-control"
-                           dir="rtl" />
-
-                    <span asp-validation-for="ApplicationNumber"
-                          class="text-danger">
-                    </span>
-
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="Gender" class="control-label">الجنس</label>
+                    <select asp-for="Gender" class="form-control">
+                        <option value="">-- اختر --</option>
+                        <option value="Male">ذكر</option>
+                        <option value="Female">أنثى</option>
+                    </select>
+                    <span asp-validation-for="Gender" class="text-danger"></span>
                 </div>
 
-
-                <!-- تاريخ تقديم الطلب -->
-                <div class="form-group mb-3">
-
-                    <label asp-for="ApplicationDate"
-                           class="control-label">
-                        تاريخ تقديم الطلب
-                    </label>
-
-                    <input asp-for="ApplicationDate"
-                           class="form-control" />
-
-                    <span asp-validation-for="ApplicationDate"
-                          class="text-danger">
-                    </span>
-
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="Nationality">الجنسية</label>
+                    <input asp-for="Nationality" class="form-control" />
+                    <span asp-validation-for="Nationality" class="text-danger"></span>
                 </div>
 
-
-                <!-- الاسم الكامل -->
-                <div class="form-group mb-3">
-
-                    <label asp-for="FullName"
-                           class="control-label">
-                        الاسم الكامل
-                    </label>
-
-                    <input asp-for="FullName"
-                           class="form-control"
-                           dir="rtl" />
-
-                    <span asp-validation-for="FullName"
-                          class="text-danger">
-                    </span>
-
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="PlaceOfBirth">مكان الولادة</label>
+                    <input asp-for="PlaceOfBirth" class="form-control" />
+                    <span asp-validation-for="PlaceOfBirth" class="text-danger"></span>
                 </div>
 
-
-                <!-- الجنس -->
-                <div class="form-group mb-3">
-
-                    <label asp-for="Gender"
-                           class="control-label">
-                        الجنس
-                    </label>
-
-                    <input asp-for="Gender"
-                           class="form-control"
-                           dir="rtl" />
-
-                    <span asp-validation-for="Gender"
-                          class="text-danger">
-                    </span>
-
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="DateOfBirth">تاريخ الولادة</label>
+                    <input asp-for="DateOfBirth" type="date" class="form-control"
+                           value="@(Model.DateOfBirth?.ToString("yyyy-MM-dd"))" />
+                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                 </div>
 
-
-                <!-- الجنسية -->
-                <div class="form-group mb-3">
-
-                    <label asp-for="Nationality"
-                           class="control-label">
-                        الجنسية
-                    </label>
-
-                    <input asp-for="Nationality"
-                           class="form-control"
-                           dir="rtl" />
-
-                    <span asp-validation-for="Nationality"
-                          class="text-danger">
-                    </span>
-
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="NationalNumber">الرقم الوطني</label>
+                    <input asp-for="NationalNumber" class="form-control" />
+                    <span asp-validation-for="NationalNumber" class="text-danger"></span>
                 </div>
 
-
-                <!-- مكان الولادة -->
-                <div class="form-group mb-3">
-
-                    <label asp-for="PlaceOfBirth"
-                           class="control-label">
-                        مكان الولادة
-                    </label>
-
-                    <input asp-for="PlaceOfBirth"
-                           class="form-control"
-                           dir="rtl" />
-
-                    <span asp-validation-for="PlaceOfBirth"
-                          class="text-danger">
-                    </span>
-
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="MaritalStatus" class="control-label">الحالة الاجتماعية</label>
+                    <select asp-for="MaritalStatus" class="form-control">
+                        <option value="">-- اختر --</option>
+                        <option value="متزوج/ة">متزوج/ة</option>
+                        <option value="أعزب/عزباء">أعزب/عزباء</option>
+                    </select>
+                    <span asp-validation-for="MaritalStatus" class="text-danger"></span>
                 </div>
 
-
-                <!-- تاريخ الميلاد -->
-                <div class="form-group mb-3">
-
-                    <label asp-for="DateOfBirth"
-                           class="control-label">
-                        تاريخ الميلاد
-                    </label>
-
-                    <input asp-for="DateOfBirth"
-                           type="date"
-                           class="form-control" />
-
-                    <span asp-validation-for="DateOfBirth"
-                          class="text-danger">
-                    </span>
-
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="Phone">رقم الهاتف</label>
+                    <input asp-for="Phone" class="form-control" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
                 </div>
 
-
-                <!-- الرقم الوطني -->
-                <div class="form-group mb-3">
-
-                    <label asp-for="NationalNumber"
-                           class="control-label">
-                        الرقم الوطني
-                    </label>
-
-                    <input asp-for="NationalNumber"
-                           class="form-control"
-                           dir="rtl" />
-
-                    <span asp-validation-for="NationalNumber"
-                          class="text-danger">
-                    </span>
-
+                <div class="col-md-12 form-group mb-3">
+                    <label asp-for="Address">العنوان</label>
+                    <input asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
                 </div>
 
-
-                <!-- الحالة الاجتماعية -->
-                <div class="form-group mb-3">
-
-                    <label asp-for="MaritalStatus"
-                           class="control-label">
-                        الحالة الاجتماعية
-                    </label>
-
-                    <input asp-for="MaritalStatus"
-                           class="form-control"
-                           dir="rtl" />
-
-                    <span asp-validation-for="MaritalStatus"
-                          class="text-danger">
-                    </span>
-
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="Email">البريد الإلكتروني</label>
+                    <input asp-for="Email" type="email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
-
-                <!-- العنوان -->
-                <div class="form-group mb-3">
-
-                    <label asp-for="Address"
-                           class="control-label">
-                        العنوان
-                    </label>
-
-                    <input asp-for="Address"
-                           class="form-control"
-                           dir="rtl" />
-
-                    <span asp-validation-for="Address"
-                          class="text-danger">
-                    </span>
-
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="DrivingLicenseTypeId" class="control-label">رخصة القيادة</label>
+                    <select asp-for="DrivingLicenseTypeId"
+                            class="form-control"
+                            asp-items="@(new SelectList(ViewBag.DrivingLicenseTypes, "Id", "Category"))">
+                        <option value="">-- اختر شهادة القيادة --</option>
+                    </select>
+                    <span asp-validation-for="DrivingLicenseTypeId" class="text-danger"></span>
                 </div>
 
-
-                <!-- رقم الهاتف -->
-                <div class="form-group mb-3">
-
-                    <label asp-for="Phone"
-                           class="control-label">
-                        رقم الهاتف
-                    </label>
-
-                    <input asp-for="Phone"
-                           class="form-control"
-                           dir="rtl" />
-
-                    <span asp-validation-for="Phone"
-                          class="text-danger">
-                    </span>
-
-                </div>
-
-
-                <!-- البريد الإلكتروني -->
-                <div class="form-group mb-3">
-
-                    <label asp-for="Email"
-                           class="control-label">
-                        البريد الإلكتروني
-                    </label>
-
-                    <input asp-for="Email"
-                           type="email"
-                           class="form-control"
-                           dir="ltr" />
-
-                    <span asp-validation-for="Email"
-                          class="text-danger">
-                    </span>
-
-                </div>
-
-
-                <!-- رخصة القيادة -->
-                <div class="form-group mb-3">
-
-                    <label asp-for="DrivingLicense"
-                           class="control-label">
-                        رخصة القيادة
-                    </label>
-
-                    <input asp-for="DrivingLicense"
-                           class="form-control"
-                           dir="rtl" />
-
-                    <span asp-validation-for="DrivingLicense"
-                          class="text-danger">
-                    </span>
-
-                </div>
-
-
-                <!-- الوظيفة المطلوبة -->
-                <div class="form-group mb-3">
-
-                    <label asp-for="Position"
-                           class="control-label">
-                        الوظيفة المطلوبة
-                    </label>
-
-                    <input asp-for="Position"
-                           class="form-control"
-                           dir="rtl" />
-
-                    <span asp-validation-for="Position"
-                          class="text-danger">
-                    </span>
-
-                </div>
-
-
-                <!-- الراتب المتوقع -->
-                <div class="form-group mb-3">
-
-                    <label asp-for="ExpectedSalary"
-                           class="control-label">
-                        الراتب المتوقع
-                    </label>
-
-                    <input asp-for="ExpectedSalary"
-                           class="form-control" />
-
-                    <span asp-validation-for="ExpectedSalary"
-                          class="text-danger">
-                    </span>
-
-                </div>
-
-
-                <!-- تاريخ المباشرة المتاح -->
-                <div class="form-group mb-3">
-
-                    <label asp-for="AvailableStartDate"
-                           class="control-label">
-                        تاريخ المباشرة المتاح
-                    </label>
-
-                    <input asp-for="AvailableStartDate"
-                           type="date"
-                           class="form-control" />
-
-                    <span asp-validation-for="AvailableStartDate"
-                          class="text-danger">
-                    </span>
-
-                </div>
-
-
-                <!-- يعمل حاليًا -->
-                <div class="form-group mb-3 form-check">
-
-                    <input asp-for="CurrentlyWorking"
-                           class="form-check-input" />
-
-                    <label asp-for="CurrentlyWorking"
-                           class="form-check-label">
-                        يعمل حاليًا
-                    </label>
-
-                    <span asp-validation-for="CurrentlyWorking"
-                          class="text-danger">
-                    </span>
-
-                </div>
-
-
-                <!-- الحالة الصحية -->
-                <div class="form-group mb-3">
-
-                    <label asp-for="HealthCondition"
-                           class="control-label">
-                        الحالة الصحية
-                    </label>
-
-                    <input asp-for="HealthCondition"
-                           class="form-control"
-                           dir="rtl" />
-
-                    <span asp-validation-for="HealthCondition"
-                          class="text-danger">
-                    </span>
-
-                </div>
-
-
-                <!-- السجل الجنائي -->
-                <div class="form-group mb-3 form-check">
-
-                    <input asp-for="CriminalRecord"
-                           class="form-check-input" />
-
-                    <label asp-for="CriminalRecord"
-                           class="form-check-label">
-                        السجل الجنائي
-                    </label>
-
-                    <span asp-validation-for="CriminalRecord"
-                          class="text-danger">
-                    </span>
-
-                </div>
-
-
-                <!-- ملاحظات -->
-                <div class="form-group mb-3">
-
-                    <label asp-for="Notes"
-                           class="control-label">
-                        ملاحظات
-                    </label>
-
-                    <input asp-for="Notes"
-                           class="form-control"
-                           dir="rtl" />
-
-                    <span asp-validation-for="Notes"
-                          class="text-danger">
-                    </span>
-
-                </div>
-
-
-                <!-- مسار السيرة الذاتية -->
-                <div class="form-group mb-3">
-
-                    <label asp-for="CvFilePath"
-                           class="control-label">
-                        ملف السيرة الذاتية
-                    </label>
-
-                    <input asp-for="CvFilePath"
-                           class="form-control"
-                           dir="ltr" />
-
-                    <span asp-validation-for="CvFilePath"
-                          class="text-danger">
-                    </span>
-
-                </div>
-
-
-                <!-- زر الحفظ -->
-                <div class="form-group mb-3">
-
-                    <input type="submit"
-                           value="حفظ التعديلات"
-                           class="btn btn-primary" />
-
-                </div>
-
-            </form>
-
+            </div>
         </div>
 
-    </div>
+
+        <!-- ===================================================== -->
+        <!-- معلومات الوظيفة -->
+        <!-- ===================================================== -->
+
+        <div class="card p-3 mb-4">
+            <h4>معلومات الوظيفة</h4>
+            <div class="row">
+
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="Position" class="control-label">الوظيفة المتقدم لها</label>
+                    <input asp-for="Position" class="form-control" />
+                    <span asp-validation-for="Position" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="ExpectedSalary" class="control-label">الراتب المتوقع</label>
+                    <input asp-for="ExpectedSalary" type="text" class="form-control" />
+                    <span asp-validation-for="ExpectedSalary" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="AvailableStartDate" class="control-label">تاريخ مباشرة العمل</label>
+                    <input asp-for="AvailableStartDate" type="date" class="form-control"
+                           value="@(Model.AvailableStartDate?.ToString("yyyy-MM-dd"))" />
+                    <span asp-validation-for="AvailableStartDate" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="CurrentlyWorking" class="control-label">يعمل حالياً</label>
+                    <div class="form-check mt-2">
+                        <input asp-for="CurrentlyWorking" type="checkbox" class="form-check-input" />
+                        <label class="form-check-label" asp-for="CurrentlyWorking">نعم</label>
+                    </div>
+                    <span asp-validation-for="CurrentlyWorking" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="HealthCondition" class="control-label">الحالة الصحية</label>
+                    <input asp-for="HealthCondition" class="form-control" />
+                    <span asp-validation-for="HealthCondition" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="CriminalRecord" class="control-label">سوابق قضائية</label>
+                    <div class="form-check mt-2">
+                        <input asp-for="CriminalRecord" type="checkbox" class="form-check-input" />
+                        <label class="form-check-label" asp-for="CriminalRecord">نعم</label>
+                    </div>
+                    <span asp-validation-for="CriminalRecord" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-12 form-group mb-3">
+                    <label asp-for="Notes" class="control-label">ملاحظات</label>
+                    <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Notes" class="text-danger"></span>
+                </div>
+
+            </div>
+        </div>
 
 
-    <div>
+        <!-- ===================================================== -->
+        <!-- المؤهلات العلمية -->
+        <!-- ===================================================== -->
 
-        <a asp-action="Index">
-            العودة إلى قائمة طلبات التوظيف
-        </a>
+        <div class="card p-3 mb-4">
+            <h4>المؤهلات العلمية</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>الشهادة / المؤهل العلمي</th>
+                            <th>الجامعة / المعهد</th>
+                            <th>التخصص</th>
+                            <th>سنة التخرج</th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
-    </div>
+                        @{
+                            var qList = Model.Qualifications ?? new(); var qCount = qList.Count;
+                        }
+                        @for (int i = 0; i < qCount; i++)
+                        {
+                            var q = qList.ElementAt(i);
+                            <tr>
+                                <td>
+                                    <input type="hidden" name="Qualifications[@i].Id" value="@q.Id" />
+                                    <select name="Qualifications[@i].Degree" class="form-control">
+                                        <option value="">-- اختر المؤهل العلمي --</option>
+                                        <option value="شهادة التعليم الأساسي (إعدادية)" selected="@(q.Degree == "شهادة التعليم الأساسي (إعدادية)")">شهادة التعليم الأساسي (إعدادية)</option>
+                                        <option value="شهادة الثانوية العامة" selected="@(q.Degree == "شهادة الثانوية العامة")">شهادة الثانوية العامة</option>
+                                        <option value="معهد" selected="@(q.Degree == "معهد")">معهد</option>
+                                        <option value="دبلوم" selected="@(q.Degree == "دبلوم")">دبلوم</option>
+                                        <option value="إجازة جامعية / بكالوريوس" selected="@(q.Degree == "إجازة جامعية / بكالوريوس")">إجازة جامعية / بكالوريوس</option>
+                                        <option value="ماجستير" selected="@(q.Degree == "ماجستير")">ماجستير</option>
+                                        <option value="دكتوراه" selected="@(q.Degree == "دكتوراه")">دكتوراه</option>
+                                    </select>
+                                </td>
+                                <td><input name="Qualifications[@i].University" class="form-control" value="@q.University" /></td>
+                                <td><input name="Qualifications[@i].Specialization" class="form-control" value="@q.Specialization" /></td>
+                                <td><input name="Qualifications[@i].GraduationYear" type="text" class="form-control" value="@q.GraduationYear" /></td>
+                            </tr>
+                        }
+
+                        @* صفوف فاضية إضافية لإضافة مؤهلات جديدة *@
+                        @for (int i = qCount; i < qCount + 2; i++)
+                        {
+                            <tr>
+                                <td>
+                                    <select name="Qualifications[@i].Degree" class="form-control">
+                                        <option value="">-- اختر المؤهل العلمي --</option>
+                                        <option value="شهادة التعليم الأساسي (إعدادية)">شهادة التعليم الأساسي (إعدادية)</option>
+                                        <option value="شهادة الثانوية العامة">شهادة الثانوية العامة</option>
+                                        <option value="معهد">معهد</option>
+                                        <option value="دبلوم">دبلوم</option>
+                                        <option value="إجازة جامعية / بكالوريوس">إجازة جامعية / بكالوريوس</option>
+                                        <option value="ماجستير">ماجستير</option>
+                                        <option value="دكتوراه">دكتوراه</option>
+                                    </select>
+                                </td>
+                                <td><input name="Qualifications[@i].University" class="form-control" /></td>
+                                <td><input name="Qualifications[@i].Specialization" class="form-control" /></td>
+                                <td><input name="Qualifications[@i].GraduationYear" type="text" class="form-control" /></td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <!-- ===================================================== -->
+        <!-- الدورات التدريبية -->
+        <!-- ===================================================== -->
+
+        <div class="card p-3 mb-4">
+            <h4>الدورات والتدريب</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>اسم الدورة</th>
+                            <th>الجهة المنظمة</th>
+                            <th>المدة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @{
+                            var courseList = Model.Courses ?? new(); var cCount = courseList.Count;
+                        }
+                        @for (int i = 0; i < cCount; i++)
+                        {
+                            var c = courseList.ElementAt(i);
+                            <tr>
+                                <td>
+                                    <input type="hidden" name="Courses[@i].Id" value="@c.Id" />
+                                    <input name="Courses[@i].CourseName" class="form-control" value="@c.CourseName" />
+                                </td>
+                                <td><input name="Courses[@i].Organization" class="form-control" value="@c.Organization" /></td>
+                                <td><input name="Courses[@i].Duration" class="form-control" value="@c.Duration" /></td>
+                            </tr>
+                        }
+
+                        @for (int i = cCount; i < cCount + 2; i++)
+                        {
+                            <tr>
+                                <td><input name="Courses[@i].CourseName" class="form-control" /></td>
+                                <td><input name="Courses[@i].Organization" class="form-control" /></td>
+                                <td><input name="Courses[@i].Duration" class="form-control" /></td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <!-- ===================================================== -->
+        <!-- الخبرات العملية -->
+        <!-- ===================================================== -->
+
+        <div class="card p-3 mb-4">
+            <h4>الخبرات العملية</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>الشركة</th>
+                            <th>المسمى الوظيفي</th>
+                            <th>من تاريخ</th>
+                            <th>إلى تاريخ</th>
+                            <th>آخر راتب</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @{
+                            var expList = Model.Experiences ?? new(); var eCount = expList.Count;
+                        }
+                        @for (int i = 0; i < eCount; i++)
+                        {
+                            var ex = expList.ElementAt(i);
+                            <tr>
+                                <td>
+                                    <input type="hidden" name="Experiences[@i].Id" value="@ex.Id" />
+                                    <input name="Experiences[@i].CompanyName" class="form-control" value="@ex.CompanyName" />
+                                </td>
+                                <td><input name="Experiences[@i].JobTitle" class="form-control" value="@ex.JobTitle" /></td>
+                                <!-- بعد (صح) -->
+                                <td><input name="Experiences[@i].FromDate" type="date" class="form-control" value="@(ex.FromDate?.ToString("yyyy-MM-dd"))" /></td>
+                                <td><input name="Experiences[@i].ToDate" type="date" class="form-control" value="@(ex.ToDate?.ToString("yyyy-MM-dd"))" /></td>
+                                <td><input name="Experiences[@i].LastSalary" type="text" class="form-control" value="@ex.LastSalary" /></td>
+                            </tr>
+                        }
+
+                        @for (int i = eCount; i < eCount + 2; i++)
+                        {
+                            <tr>
+                                <td><input name="Experiences[@i].CompanyName" class="form-control" /></td>
+                                <td><input name="Experiences[@i].JobTitle" class="form-control" /></td>
+                                <td><input name="Experiences[@i].FromDate" type="date" class="form-control" /></td>
+                                <td><input name="Experiences[@i].ToDate" type="date" class="form-control" /></td>
+                                <td><input name="Experiences[@i].LastSalary" type="text" class="form-control" /></td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <!-- ===================================================== -->
+        <!-- اللغات -->
+        <!-- ===================================================== -->
+
+        <div class="card p-3 mb-4">
+            <h4>اللغات</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>اللغة</th>
+                            <th>التحدث</th>
+                            <th>الكتابة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @{
+                            var langList = Model.Languages ?? new(); var lCount = langList.Count;
+                        }
+                        @for (int i = 0; i < lCount; i++)
+                        {
+                            var lang = langList.ElementAt(i);
+                            <tr>
+                                <td>
+                                    <input type="hidden" name="Languages[@i].Id" value="@lang.Id" />
+                                    <input type="hidden" name="Languages[@i].LanguageName" value="@lang.LanguageName" />
+                                    @lang.LanguageName
+                                </td>
+                                <td>
+                                    <select name="Languages[@i].Speaking" class="form-control">
+                                        <option value="">-- اختر المستوى --</option>
+                                        <option value="ضعيف" selected="@(lang.Speaking == "ضعيف")">ضعيف</option>
+                                        <option value="مقبول" selected="@(lang.Speaking == "مقبول")">مقبول</option>
+                                        <option value="جيد" selected="@(lang.Speaking == "جيد")">جيد</option>
+                                        <option value="ممتاز" selected="@(lang.Speaking == "ممتاز")">ممتاز</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select name="Languages[@i].Writing" class="form-control">
+                                        <option value="">-- اختر المستوى --</option>
+                                        <option value="ضعيف" selected="@(lang.Writing == "ضعيف")">ضعيف</option>
+                                        <option value="مقبول" selected="@(lang.Writing == "مقبول")">مقبول</option>
+                                        <option value="جيد" selected="@(lang.Writing == "جيد")">جيد</option>
+                                        <option value="ممتاز" selected="@(lang.Writing == "ممتاز")">ممتاز</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        }
+
+                        <!-- صف لإضافة لغة جديدة -->
+                        <tr>
+                            <td>
+                                <input type="text" name="Languages[@lCount].LanguageName" class="form-control" placeholder="اكتب اللغة" />
+                            </td>
+                            <td>
+                                <select name="Languages[@lCount].Speaking" class="form-control">
+                                    <option value="">-- اختر المستوى --</option>
+                                    <option value="ضعيف">ضعيف</option>
+                                    <option value="مقبول">مقبول</option>
+                                    <option value="جيد">جيد</option>
+                                    <option value="ممتاز">ممتاز</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="Languages[@lCount].Writing" class="form-control">
+                                    <option value="">-- اختر المستوى --</option>
+                                    <option value="ضعيف">ضعيف</option>
+                                    <option value="مقبول">مقبول</option>
+                                    <option value="جيد">جيد</option>
+                                    <option value="ممتاز">ممتاز</option>
+                                </select>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <!-- ===================================================== -->
+        <!-- مهارات الحاسوب -->
+        <!-- ===================================================== -->
+
+        <div class="card p-3 mb-4">
+            <h4>مهارات الحاسوب</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <tbody>
+
+                        @{
+                            var skList = Model.ComputerSkills ?? new(); var skCount = skList.Count;
+                        }
+                        @for (int i = 0; i < skCount; i++)
+                        {
+                            var sk = skList.ElementAt(i);
+                            <tr>
+                                <td>
+                                    <input type="hidden" name="ComputerSkills[@i].Id" value="@sk.Id" />
+                                    <input name="ComputerSkills[@i].SkillName" class="form-control" value="@sk.SkillName" placeholder="مثال: MS Office" />
+                                </td>
+                            </tr>
+                        }
+
+                        @for (int i = skCount; i < skCount + 2; i++)
+                        {
+                            <tr>
+                                <td>
+                                    <input name="ComputerSkills[@i].SkillName" class="form-control" placeholder="مثال: MS Office" />
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <!-- ===================================================== -->
+        <!-- السيرة الذاتية -->
+        <!-- ===================================================== -->
+
+        <div class="card p-3 mb-4">
+            <h4>السيرة الذاتية</h4>
+
+            @if (!string.IsNullOrEmpty(Model.CvFileName))
+            {
+                <p>
+                    الملف الحالي:
+                    <a asp-action="DownloadCv" asp-route-id="@Model.Id" target="_blank">@Model.CvFileName</a>
+                </p>
+            }
+
+            <div class="form-group">
+                <label class="control-label">رفع سيرة ذاتية جديدة (اختياري)</label>
+                <input type="file" name="CvFile" class="form-control" accept=".pdf,.doc,.docx" />
+                <small class="text-muted">الصيغ المسموحة: PDF, DOC, DOCX — اتركه فارغًا إذا لا تريد تغيير الملف الحالي</small>
+            </div>
+        </div>
+
+
+        <!-- ===================================================== -->
+        <!-- حفظ -->
+        <!-- ===================================================== -->
+
+        <div class="mb-5 text-start">
+            <button type="submit" class="btn btn-primary btn-lg">حفظ التعديلات</button>
+            <a asp-action="Index" class="btn btn-secondary btn-lg">إلغاء</a>
+        </div>
+
+    </form>
 
 </div>
 
-<style>
-    /* RTL خاص بقسم Job Applications */
-    .job-application-page {
-        direction: rtl;
-        text-align: right;
-    }
-
-    .job-application-page label {
-        text-align: right;
-        display: block;
-    }
-
-    .job-application-page .form-control {
-        text-align: right;
-    }
-
-    .job-application-page input[type="email"],
-    .job-application-page input[asp-for="CvFilePath"] {
-        direction: ltr;
-    }
-
-    .job-application-page .form-check {
-        padding-right: 1.5em;
-        padding-left: 0;
-    }
-
-    .job-application-page .form-check-input {
-        float: right;
-        margin-right: -1.5em;
-        margin-left: 0;
-    }
-</style>
 
 @section Scripts {
     @{
