@@ -16,7 +16,10 @@ public class VisitorsController : Controller
     // GET: Visitors
     public async Task<IActionResult> Index()
     {
-        var visitors = await _context.Visitors.ToListAsync();
+        var visitors = await _context.Visitors
+            .OrderByDescending(v => v.Id)
+            .ToListAsync();
+
         return View(visitors);
     }
 
