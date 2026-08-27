@@ -35,4 +35,3 @@ namespace ReceptionSystem.Data
         }
     }
 }
-//النلانناتلاتلانىوىن

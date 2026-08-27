@@ -1,11 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using ReceptionSystem.Data;
+using ReceptionSystem.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContext") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContext' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddAuthorization();
+builder.Services.AddScoped<JobApplicationNumberGenerator>();
 // Add services to the container.
 var app = builder.Build();
 
@@ -20,7 +23,6 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseAuthorization();
 
 
 app.MapStaticAssets();

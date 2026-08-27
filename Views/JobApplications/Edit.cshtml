@@ -19,7 +19,6 @@
 
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="ApplicationNumber" />
-        <input type="hidden" asp-for="ApplicationDate" />
 
 
         <!-- ===================================================== -->
@@ -120,6 +119,14 @@
         <div class="card p-3 mb-4">
             <h4>معلومات الوظيفة</h4>
             <div class="row">
+
+                <!-- Application Date -->
+                <div class="col-md-6 form-group mb-3">
+                    <label asp-for="ApplicationDate" class="control-label">تاريخ تقديم الطلب</label>
+                    <input asp-for="ApplicationDate" type="date" class="form-control"
+                           value="@(Model.ApplicationDate.ToString("yyyy-MM-dd"))" />
+                    <span asp-validation-for="ApplicationDate" class="text-danger"></span>
+                </div>
 
                 <div class="col-md-6 form-group mb-3">
                     <label asp-for="Position" class="control-label">الوظيفة المتقدم لها</label>
@@ -234,7 +241,7 @@
                                         <option value="إجازة جامعية / بكالوريوس">إجازة جامعية / بكالوريوس</option>
                                         <option value="ماجستير">ماجستير</option>
                                         <option value="دكتوراه">دكتوراه</option>
-                                    </select>ct>
+                                    </select>
                                 </td>
                                 <td><input name="Qualifications[@i].University" class="form-control" /></td>
                                 <td><input name="Qualifications[@i].Specialization" class="form-control" /></td>
@@ -327,7 +334,6 @@
                                     <input name="Experiences[@i].CompanyName" class="form-control" value="@ex.CompanyName" />
                                 </td>
                                 <td><input name="Experiences[@i].JobTitle" class="form-control" value="@ex.JobTitle" /></td>
-                                <!-- بعد (صح) -->
                                 <td><input name="Experiences[@i].FromDate" type="date" class="form-control" value="@(ex.FromDate?.ToString("yyyy-MM-dd"))" /></td>
                                 <td><input name="Experiences[@i].ToDate" type="date" class="form-control" value="@(ex.ToDate?.ToString("yyyy-MM-dd"))" /></td>
                                 <td><input name="Experiences[@i].LastSalary" type="text" class="form-control" value="@ex.LastSalary" /></td>
@@ -467,29 +473,6 @@
 
                     </tbody>
                 </table>
-            </div>
-        </div>
-
-
-        <!-- ===================================================== -->
-        <!-- السيرة الذاتية -->
-        <!-- ===================================================== -->
-
-        <div class="card p-3 mb-4">
-            <h4>السيرة الذاتية</h4>
-
-            @if (!string.IsNullOrEmpty(Model.CvFileName))
-            {
-                <p>
-                    الملف الحالي:
-                    <a asp-action="DownloadCv" asp-route-id="@Model.Id" target="_blank">@Model.CvFileName</a>
-                </p>
-            }
-
-            <div class="form-group">
-                <label class="control-label">رفع سيرة ذاتية جديدة (اختياري)</label>
-                <input type="file" name="CvFile" class="form-control" accept=".pdf,.doc,.docx" />
-                <small class="text-muted">الصيغ المسموحة: PDF, DOC, DOCX — اتركه فارغًا إذا لا تريد تغيير الملف الحالي</small>
             </div>
         </div>
 

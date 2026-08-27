@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReceptionSystem.Data;
 using ReceptionSystem.Models;
+using ReceptionSystem.Services;
 using System;
 using System.IO;
 using System.Linq;
@@ -16,13 +17,16 @@ namespace ReceptionSystem.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _env;
+        private readonly JobApplicationNumberGenerator _numberGenerator;
 
         public JobApplicationsController(
             ApplicationDbContext context,
-            IWebHostEnvironment env)
+            IWebHostEnvironment env,
+            JobApplicationNumberGenerator numberGenerator)
         {
             _context = context;
             _env = env;
+            _numberGenerator = numberGenerator;
         }
 
 
@@ -259,19 +263,20 @@ namespace ReceptionSystem.Controllers
 
 
             // -------------------------------------------------
-            // Save Job Application (initial save to get Id)
+            // Assign a sequential application number (from DB sequence)
+            // Format: DAMA/HR/{n}
+            // -------------------------------------------------
+
+            jobApplication.ApplicationNumber =
+                await _numberGenerator.GenerateNextNumberAsync("HR");
+
+
+            // -------------------------------------------------
+            // Save Job Application
             // -------------------------------------------------
 
             _context.JobApplications.Add(jobApplication);
 
-            await _context.SaveChangesAsync();
-
-            // -------------------------------------------------
-            // Assign a human-friendly sequential application number
-            // Format: DAMA/HR/{Id}
-            // -------------------------------------------------
-            jobApplication.ApplicationNumber = $"DAMA/HR/{jobApplication.Id}";
-            _context.JobApplications.Update(jobApplication);
             await _context.SaveChangesAsync();
 
 
@@ -331,13 +336,12 @@ namespace ReceptionSystem.Controllers
             return View(job);
         }
 
-
         // =====================================================
         // POST: Edit
         // =====================================================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, JobApplication jobApplication, IFormFile? CvFile)
+        public async Task<IActionResult> Edit(int id, JobApplication jobApplication)
         {
             if (id != jobApplication.Id)
             {
@@ -396,27 +400,22 @@ namespace ReceptionSystem.Controllers
                 return View(jobApplication);
             }
 
-            // Handle CV upload if provided
-            if (CvFile != null && CvFile.Length > 0)
+            // Preserve fields that the Edit form does not include
+            // (CV data + the sequential ApplicationNumber must never change on Edit)
+            var existing = await _context.JobApplications
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (existing == null)
             {
-                var allowedExtensions = new[] { ".pdf", ".doc", ".docx" };
-                var extension = Path.GetExtension(CvFile.FileName).ToLowerInvariant();
-                if (!allowedExtensions.Contains(extension))
-                {
-                    ViewBag.DrivingLicenseTypes = await _context.DrivingLicenseTypes.OrderBy(x => x.Category).ToListAsync();
-                    ModelState.AddModelError("CvFile", "Only PDF, DOC and DOCX files are allowed.");
-                    return View(jobApplication);
-                }
-
-                using (var ms = new MemoryStream())
-                {
-                    await CvFile.CopyToAsync(ms);
-                    jobApplication.CvFileData = ms.ToArray();
-                }
-
-                jobApplication.CvFileName = Path.GetFileName(CvFile.FileName);
-                jobApplication.CvContentType = CvFile.ContentType;
+                return NotFound();
             }
+
+            jobApplication.CvFileData = existing.CvFileData;
+            jobApplication.CvFileName = existing.CvFileName;
+            jobApplication.CvContentType = existing.CvContentType;
+            jobApplication.CvFilePath = existing.CvFilePath;
+            jobApplication.ApplicationNumber = existing.ApplicationNumber;
 
             try
             {
@@ -426,7 +425,7 @@ namespace ReceptionSystem.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (! _context.JobApplications.Any(e => e.Id == jobApplication.Id))
+                if (!_context.JobApplications.Any(e => e.Id == jobApplication.Id))
                 {
                     return NotFound();
                 }
@@ -438,7 +437,6 @@ namespace ReceptionSystem.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
 
         // =====================================================
         // GET: Manage (redirect to Edit)
@@ -724,6 +722,4 @@ namespace ReceptionSystem.Controllers
             return View(application);
         }
     }
-
-        }
-    
+}

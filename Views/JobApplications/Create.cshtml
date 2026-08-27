@@ -230,6 +230,23 @@
 
             <div class="row">
 
+                <!-- Application Date -->
+                <div class="col-md-6 form-group mb-3">
+
+                    <label asp-for="ApplicationDate" class="control-label">
+                        تاريخ تقديم الطلب
+                    </label>
+
+                    <input asp-for="ApplicationDate"
+                           type="date"
+                           class="form-control" />
+
+                    <span asp-validation-for="ApplicationDate"
+                          class="text-danger"></span>
+
+                </div>
+
+
                 <!-- Position -->
                 <div class="col-md-6 form-group mb-3">
 
@@ -893,7 +910,6 @@
 
                     <thead>
                         <tr>
-                            
                         </tr>
                     </thead>
 
