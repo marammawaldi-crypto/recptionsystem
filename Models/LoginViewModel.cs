@@ -16,6 +16,6 @@ namespace ReceptionSystem.Models
         [Display(Name = "تذكرني")]
         public bool RememberMe { get; set; }
 
-        public string ReturnUrl { get; set; }
+        public string? ReturnUrl { get; set; }
     }
 }
