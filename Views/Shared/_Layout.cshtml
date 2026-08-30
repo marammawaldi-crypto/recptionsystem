@@ -34,6 +34,19 @@
             margin-bottom: 0 !important;
         }
 
+        .user-role {
+            display: flex;
+            align-items: center;
+            margin-right: 5px;
+        }
+
+        .user-role .nav-link {
+            color: white !important;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 0 10px;
+        }
+
         .page-content {
             flex: 1;
             min-height: 0;
@@ -85,33 +98,21 @@
 
                     <ul class="navbar-nav flex-grow-1">
 
-                        <li class="nav-item">
-                            <a class="nav-link"
-                               asp-area=""
-                               asp-controller="Home"
-                               asp-action="Index">
-                                الرئيسية
-                            </a>
-                        </li>
+                        @if (!(ViewContext.RouteData.Values["controller"]?.ToString() == "Account"
+    && ViewContext.RouteData.Values["action"]?.ToString() == "Login"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="Index">الرئيسية</a>
+                            </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link"
-                               asp-area=""
-                               asp-controller="Visitors"
-                               asp-action="Index">
-                                الزوار
-                            </a>
-                        </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Visitors" asp-action="Index">الزوار</a>
+                            </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link"
-                               asp-area=""
-                               asp-controller="JobApplications"
-                               asp-action="Index">
-                                طلبات التوظيف
-                            </a>
-                        </li>
-
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="JobApplications" asp-action="Index">طلبات التوظيف</a>
+                            </li>
+                        }
                         <li class="nav-logo">
                             <img src="~/images/minilogo.png" class="minilogo" />
                         </li>

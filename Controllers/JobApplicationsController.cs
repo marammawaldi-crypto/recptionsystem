@@ -1,4 +1,6 @@
+
 using ClosedXML.Excel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +14,11 @@ using System.Threading.Tasks;
 
 namespace ReceptionSystem.Controllers
 {
+    // =====================================================
+    // Authentication Required
+    // =====================================================
+
+    [Authorize]
     public class JobApplicationsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -25,9 +32,8 @@ namespace ReceptionSystem.Controllers
             _env = env;
         }
 
-
         // =====================================================
-        // GET: JOBAPPLICATIONS
+        // GET: /JobApplications
         // =====================================================
 
         public async Task<IActionResult> Index()
@@ -37,9 +43,8 @@ namespace ReceptionSystem.Controllers
             );
         }
 
-
         // =====================================================
-        // GET: JOBAPPLICATIONS/Details/5
+        // GET: /JobApplications/Details/5
         // =====================================================
 
         public async Task<IActionResult> Details(int? id)
@@ -61,14 +66,12 @@ namespace ReceptionSystem.Controllers
             return View(jobApplication);
         }
 
-
         // =====================================================
-        // GET: JOBAPPLICATIONS/Create
+        // GET: /JobApplications/Create
         // =====================================================
 
         public async Task<IActionResult> Create()
         {
-            // Load Driving License Types
             ViewBag.DrivingLicenseTypes =
                 await _context.DrivingLicenseTypes
                     .OrderBy(x => x.Category)
@@ -77,9 +80,8 @@ namespace ReceptionSystem.Controllers
             return View(new JobApplication());
         }
 
-
         // =====================================================
-        // POST: JOBAPPLICATIONS/Create
+        // POST: /JobApplications/Create
         // =====================================================
 
         [HttpPost]
@@ -100,8 +102,7 @@ namespace ReceptionSystem.Controllers
                         || !string.IsNullOrWhiteSpace(q.University)
                         || !string.IsNullOrWhiteSpace(q.GraduationYear))
                     .ToList()
-                ?? new List<Qualification>();
-
+                    ?? new List<Qualification>();
 
             // -------------------------------------------------
             // Remove empty Courses
@@ -114,8 +115,7 @@ namespace ReceptionSystem.Controllers
                         || !string.IsNullOrWhiteSpace(c.Organization)
                         || !string.IsNullOrWhiteSpace(c.Duration))
                     .ToList()
-                ?? new List<Course>();
-
+                    ?? new List<Course>();
 
             // -------------------------------------------------
             // Remove empty Experiences
@@ -130,8 +130,7 @@ namespace ReceptionSystem.Controllers
                         || e.ToDate.HasValue
                         || !string.IsNullOrWhiteSpace(e.LastSalary))
                     .ToList()
-                ?? new List<Experience>();
-
+                    ?? new List<Experience>();
 
             // -------------------------------------------------
             // Remove empty Computer Skills
@@ -142,8 +141,7 @@ namespace ReceptionSystem.Controllers
                     .Where(c =>
                         !string.IsNullOrWhiteSpace(c.SkillName))
                     .ToList()
-                ?? new List<ComputerSkill>();
-
+                    ?? new List<ComputerSkill>();
 
             // -------------------------------------------------
             // Remove empty Languages
@@ -156,8 +154,7 @@ namespace ReceptionSystem.Controllers
                         || !string.IsNullOrWhiteSpace(l.Speaking)
                         || !string.IsNullOrWhiteSpace(l.Writing))
                     .ToList()
-                ?? new List<Language>();
-
+                    ?? new List<Language>();
 
             // -------------------------------------------------
             // Remove validation errors from optional sections
@@ -177,14 +174,12 @@ namespace ReceptionSystem.Controllers
                 ModelState.Remove(key);
             }
 
-
             // -------------------------------------------------
             // Validate
             // -------------------------------------------------
 
             if (!ModelState.IsValid)
             {
-                // Reload Driving License Types
                 ViewBag.DrivingLicenseTypes =
                     await _context.DrivingLicenseTypes
                         .OrderBy(x => x.Category)
@@ -193,14 +188,11 @@ namespace ReceptionSystem.Controllers
                 return View(jobApplication);
             }
 
-
             // -------------------------------------------------
             // Application Date
             // -------------------------------------------------
 
-            jobApplication.ApplicationDate =
-                DateTime.Now;
-
+            jobApplication.ApplicationDate = DateTime.Now;
 
             // =================================================
             // SAVE CV
@@ -219,8 +211,6 @@ namespace ReceptionSystem.Controllers
                     Path.GetExtension(CvFile.FileName)
                         .ToLowerInvariant();
 
-
-                // Check file extension
                 if (!allowedExtensions.Contains(extension))
                 {
                     ViewBag.DrivingLicenseTypes =
@@ -236,8 +226,6 @@ namespace ReceptionSystem.Controllers
                     return View(jobApplication);
                 }
 
-
-                // Read CV into memory
                 using (var memoryStream = new MemoryStream())
                 {
                     await CvFile.CopyToAsync(memoryStream);
@@ -246,20 +234,15 @@ namespace ReceptionSystem.Controllers
                         memoryStream.ToArray();
                 }
 
-
-                // Save CV file name
                 jobApplication.CvFileName =
                     Path.GetFileName(CvFile.FileName);
 
-
-                // Save CV content type
                 jobApplication.CvContentType =
                     CvFile.ContentType;
             }
 
-
             // -------------------------------------------------
-            // Save Job Application (initial save to get Id)
+            // Save Job Application
             // -------------------------------------------------
 
             _context.JobApplications.Add(jobApplication);
@@ -267,13 +250,16 @@ namespace ReceptionSystem.Controllers
             await _context.SaveChangesAsync();
 
             // -------------------------------------------------
-            // Assign a human-friendly sequential application number
+            // Assign Application Number
             // Format: DAMA/HR/{Id}
             // -------------------------------------------------
-            jobApplication.ApplicationNumber = $"DAMA/HR/{jobApplication.Id}";
-            _context.JobApplications.Update(jobApplication);
-            await _context.SaveChangesAsync();
 
+            jobApplication.ApplicationNumber =
+                $"DAMA/HR/{jobApplication.Id}";
+
+            _context.JobApplications.Update(jobApplication);
+
+            await _context.SaveChangesAsync();
 
             // -------------------------------------------------
             // Success
@@ -285,28 +271,42 @@ namespace ReceptionSystem.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
         // =====================================================
         // GET: Download CV
         // =====================================================
+
         public async Task<IActionResult> DownloadCv(int id)
         {
-            var job = await _context.JobApplications.FindAsync(id);
-            if (job == null || job.CvFileData == null || job.CvFileData.Length == 0)
+            var job =
+                await _context.JobApplications.FindAsync(id);
+
+            if (job == null ||
+                job.CvFileData == null ||
+                job.CvFileData.Length == 0)
             {
                 return NotFound();
             }
 
-            var fileName = string.IsNullOrEmpty(job.CvFileName) ? $"cv_{job.Id}.pdf" : job.CvFileName;
-            var contentType = string.IsNullOrEmpty(job.CvContentType) ? "application/octet-stream" : job.CvContentType;
+            var fileName =
+                string.IsNullOrEmpty(job.CvFileName)
+                    ? $"cv_{job.Id}.pdf"
+                    : job.CvFileName;
 
-            return File(job.CvFileData, contentType, fileName);
+            var contentType =
+                string.IsNullOrEmpty(job.CvContentType)
+                    ? "application/octet-stream"
+                    : job.CvContentType;
+
+            return File(
+                job.CvFileData,
+                contentType,
+                fileName);
         }
-
 
         // =====================================================
         // GET: Edit
         // =====================================================
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -314,68 +314,116 @@ namespace ReceptionSystem.Controllers
                 return NotFound();
             }
 
-            var job = await _context.JobApplications.FindAsync(id.Value);
+            var job =
+                await _context.JobApplications
+                    .FindAsync(id.Value);
+
             if (job == null)
             {
                 return NotFound();
             }
 
-            ViewBag.DrivingLicenseTypes = await _context.DrivingLicenseTypes.OrderBy(x => x.Category).ToListAsync();
+            ViewBag.DrivingLicenseTypes =
+                await _context.DrivingLicenseTypes
+                    .OrderBy(x => x.Category)
+                    .ToListAsync();
+
             return View(job);
         }
-
 
         // =====================================================
         // POST: Edit
         // =====================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, JobApplication jobApplication, IFormFile? CvFile)
+        public async Task<IActionResult> Edit(
+            int id,
+            JobApplication jobApplication,
+            IFormFile? CvFile)
         {
             if (id != jobApplication.Id)
             {
                 return NotFound();
             }
 
-            // Basic validation: remove empty optional collections (same logic as Create)
-            jobApplication.Qualifications = jobApplication.Qualifications?
-                .Where(q => !string.IsNullOrWhiteSpace(q.Degree)
-                            || !string.IsNullOrWhiteSpace(q.Specialization)
-                            || !string.IsNullOrWhiteSpace(q.University)
-                            || !string.IsNullOrWhiteSpace(q.GraduationYear))
-                .ToList() ?? new List<Qualification>();
+            // -------------------------------------------------
+            // Remove empty Qualifications
+            // -------------------------------------------------
 
-            jobApplication.Courses = jobApplication.Courses?
-                .Where(c => !string.IsNullOrWhiteSpace(c.CourseName)
-                            || !string.IsNullOrWhiteSpace(c.Organization)
-                            || !string.IsNullOrWhiteSpace(c.Duration))
-                .ToList() ?? new List<Course>();
+            jobApplication.Qualifications =
+                jobApplication.Qualifications?
+                    .Where(q =>
+                        !string.IsNullOrWhiteSpace(q.Degree)
+                        || !string.IsNullOrWhiteSpace(q.Specialization)
+                        || !string.IsNullOrWhiteSpace(q.University)
+                        || !string.IsNullOrWhiteSpace(q.GraduationYear))
+                    .ToList()
+                    ?? new List<Qualification>();
 
-            jobApplication.Experiences = jobApplication.Experiences?
-                .Where(e => !string.IsNullOrWhiteSpace(e.CompanyName)
-                            || !string.IsNullOrWhiteSpace(e.JobTitle)
-                            || e.FromDate != default
-                            || e.ToDate.HasValue
-                            || !string.IsNullOrWhiteSpace(e.LastSalary))
-                .ToList() ?? new List<Experience>();
+            // -------------------------------------------------
+            // Remove empty Courses
+            // -------------------------------------------------
 
-            jobApplication.ComputerSkills = jobApplication.ComputerSkills?
-                .Where(c => !string.IsNullOrWhiteSpace(c.SkillName))
-                .ToList() ?? new List<ComputerSkill>();
+            jobApplication.Courses =
+                jobApplication.Courses?
+                    .Where(c =>
+                        !string.IsNullOrWhiteSpace(c.CourseName)
+                        || !string.IsNullOrWhiteSpace(c.Organization)
+                        || !string.IsNullOrWhiteSpace(c.Duration))
+                    .ToList()
+                    ?? new List<Course>();
 
-            jobApplication.Languages = jobApplication.Languages?
-                .Where(l => !string.IsNullOrWhiteSpace(l.LanguageName)
-                            || !string.IsNullOrWhiteSpace(l.Speaking)
-                            || !string.IsNullOrWhiteSpace(l.Writing))
-                .ToList() ?? new List<Language>();
+            // -------------------------------------------------
+            // Remove empty Experiences
+            // -------------------------------------------------
 
-            // Remove validation errors for optional collections
+            jobApplication.Experiences =
+                jobApplication.Experiences?
+                    .Where(e =>
+                        !string.IsNullOrWhiteSpace(e.CompanyName)
+                        || !string.IsNullOrWhiteSpace(e.JobTitle)
+                        || e.FromDate != default
+                        || e.ToDate.HasValue
+                        || !string.IsNullOrWhiteSpace(e.LastSalary))
+                    .ToList()
+                    ?? new List<Experience>();
+
+            // -------------------------------------------------
+            // Remove empty Computer Skills
+            // -------------------------------------------------
+
+            jobApplication.ComputerSkills =
+                jobApplication.ComputerSkills?
+                    .Where(c =>
+                        !string.IsNullOrWhiteSpace(c.SkillName))
+                    .ToList()
+                    ?? new List<ComputerSkill>();
+
+            // -------------------------------------------------
+            // Remove empty Languages
+            // -------------------------------------------------
+
+            jobApplication.Languages =
+                jobApplication.Languages?
+                    .Where(l =>
+                        !string.IsNullOrWhiteSpace(l.LanguageName)
+                        || !string.IsNullOrWhiteSpace(l.Speaking)
+                        || !string.IsNullOrWhiteSpace(l.Writing))
+                    .ToList()
+                    ?? new List<Language>();
+
+            // -------------------------------------------------
+            // Remove validation errors
+            // -------------------------------------------------
+
             var keysToRemove = ModelState.Keys
-                .Where(k => k.StartsWith("Qualifications[")
-                            || k.StartsWith("Courses[")
-                            || k.StartsWith("Experiences[")
-                            || k.StartsWith("ComputerSkills[")
-                            || k.StartsWith("Languages["))
+                .Where(k =>
+                    k.StartsWith("Qualifications[")
+                    || k.StartsWith("Courses[")
+                    || k.StartsWith("Experiences[")
+                    || k.StartsWith("ComputerSkills[")
+                    || k.StartsWith("Languages["))
                 .ToList();
 
             foreach (var key in keysToRemove)
@@ -383,98 +431,146 @@ namespace ReceptionSystem.Controllers
                 ModelState.Remove(key);
             }
 
+            // -------------------------------------------------
+            // Validate
+            // -------------------------------------------------
+
             if (!ModelState.IsValid)
             {
-                ViewBag.DrivingLicenseTypes = await _context.DrivingLicenseTypes.OrderBy(x => x.Category).ToListAsync();
+                ViewBag.DrivingLicenseTypes =
+                    await _context.DrivingLicenseTypes
+                        .OrderBy(x => x.Category)
+                        .ToListAsync();
+
                 return View(jobApplication);
             }
 
-            // Handle CV upload if provided
+            // -------------------------------------------------
+            // Handle CV upload
+            // -------------------------------------------------
+
             if (CvFile != null && CvFile.Length > 0)
             {
-                var allowedExtensions = new[] { ".pdf", ".doc", ".docx" };
-                var extension = Path.GetExtension(CvFile.FileName).ToLowerInvariant();
+                var allowedExtensions =
+                    new[]
+                    {
+                        ".pdf",
+                        ".doc",
+                        ".docx"
+                    };
+
+                var extension =
+                    Path.GetExtension(CvFile.FileName)
+                        .ToLowerInvariant();
+
                 if (!allowedExtensions.Contains(extension))
                 {
-                    ViewBag.DrivingLicenseTypes = await _context.DrivingLicenseTypes.OrderBy(x => x.Category).ToListAsync();
-                    ModelState.AddModelError("CvFile", "Only PDF, DOC and DOCX files are allowed.");
+                    ViewBag.DrivingLicenseTypes =
+                        await _context.DrivingLicenseTypes
+                            .OrderBy(x => x.Category)
+                            .ToListAsync();
+
+                    ModelState.AddModelError(
+                        "CvFile",
+                        "Only PDF, DOC and DOCX files are allowed.");
+
                     return View(jobApplication);
                 }
 
                 using (var ms = new MemoryStream())
                 {
                     await CvFile.CopyToAsync(ms);
-                    jobApplication.CvFileData = ms.ToArray();
+
+                    jobApplication.CvFileData =
+                        ms.ToArray();
                 }
 
-                jobApplication.CvFileName = Path.GetFileName(CvFile.FileName);
-                jobApplication.CvContentType = CvFile.ContentType;
+                jobApplication.CvFileName =
+                    Path.GetFileName(CvFile.FileName);
+
+                jobApplication.CvContentType =
+                    CvFile.ContentType;
             }
+
+            // -------------------------------------------------
+            // Update
+            // -------------------------------------------------
 
             try
             {
                 _context.Update(jobApplication);
+
                 await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Job application updated successfully.";
+
+                TempData["SuccessMessage"] =
+                    "Job application updated successfully.";
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (! _context.JobApplications.Any(e => e.Id == jobApplication.Id))
+                if (!_context.JobApplications
+                    .Any(e => e.Id == jobApplication.Id))
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+
+                throw;
             }
 
             return RedirectToAction(nameof(Index));
         }
 
+        // =====================================================
+        // GET: Manage
+        // =====================================================
 
-        // =====================================================
-        // GET: Manage (redirect to Edit)
-        // =====================================================
         public IActionResult Manage(int id)
         {
-            return RedirectToAction(nameof(Edit), new { id });
+            return RedirectToAction(
+                nameof(Edit),
+                new { id });
         }
-
 
         // =====================================================
         // POST: Delete
         // =====================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var job = await _context.JobApplications.FindAsync(id);
+            var job =
+                await _context.JobApplications
+                    .FindAsync(id);
+
             if (job == null)
             {
                 return NotFound();
             }
 
             _context.JobApplications.Remove(job);
+
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Job application deleted.";
-            return RedirectToAction(nameof(Index));
+            TempData["SuccessMessage"] =
+                "Job application deleted.";
 
+            return RedirectToAction(nameof(Index));
         }
+
         // =====================================================
-        // EXPORT COMPLETE JOB APPLICATION TO EXCEL
+        // EXPORT TO EXCEL
         // =====================================================
 
         public async Task<IActionResult> ExportToExcel(int id)
         {
-            var application = await _context.JobApplications
-                .Include(x => x.Qualifications)
-                .Include(x => x.Courses)
-                .Include(x => x.Experiences)
-                .Include(x => x.Languages)
-                .Include(x => x.ComputerSkills)
-                .FirstOrDefaultAsync(x => x.Id == id);
+            var application =
+                await _context.JobApplications
+                    .Include(x => x.Qualifications)
+                    .Include(x => x.Courses)
+                    .Include(x => x.Experiences)
+                    .Include(x => x.Languages)
+                    .Include(x => x.ComputerSkills)
+                    .FirstOrDefaultAsync(x => x.Id == id);
 
             if (application == null)
             {
@@ -483,60 +579,83 @@ namespace ReceptionSystem.Controllers
 
             using var workbook = new XLWorkbook();
 
-            var worksheet = workbook.Worksheets.Add("طلب التوظيف");
+            // =================================================
+            // Main Information
+            // =================================================
+
+            var worksheet =
+                workbook.Worksheets.Add("طلب التوظيف");
 
             worksheet.RightToLeft = true;
 
             worksheet.Cell(1, 1).Value = "رقم الطلب";
-            worksheet.Cell(1, 2).Value = application.ApplicationNumber;
+            worksheet.Cell(1, 2).Value =
+                application.ApplicationNumber;
 
             worksheet.Cell(2, 1).Value = "تاريخ الطلب";
-            worksheet.Cell(2, 2).Value = application.ApplicationDate;
+            worksheet.Cell(2, 2).Value =
+                application.ApplicationDate;
 
             worksheet.Cell(3, 1).Value = "الاسم الكامل";
-            worksheet.Cell(3, 2).Value = application.FullName;
+            worksheet.Cell(3, 2).Value =
+                application.FullName;
 
             worksheet.Cell(4, 1).Value = "الجنس";
-            worksheet.Cell(4, 2).Value = application.Gender;
+            worksheet.Cell(4, 2).Value =
+                application.Gender;
 
             worksheet.Cell(5, 1).Value = "الجنسية";
-            worksheet.Cell(5, 2).Value = application.Nationality;
+            worksheet.Cell(5, 2).Value =
+                application.Nationality;
 
             worksheet.Cell(6, 1).Value = "مكان الولادة";
-            worksheet.Cell(6, 2).Value = application.PlaceOfBirth;
+            worksheet.Cell(6, 2).Value =
+                application.PlaceOfBirth;
 
             worksheet.Cell(7, 1).Value = "تاريخ الميلاد";
-            worksheet.Cell(7, 2).Value = application.DateOfBirth;
+            worksheet.Cell(7, 2).Value =
+                application.DateOfBirth;
 
             worksheet.Cell(8, 1).Value = "الرقم الوطني";
-            worksheet.Cell(8, 2).Value = application.NationalNumber;
+            worksheet.Cell(8, 2).Value =
+                application.NationalNumber;
 
             worksheet.Cell(9, 1).Value = "الحالة الاجتماعية";
-            worksheet.Cell(9, 2).Value = application.MaritalStatus;
+            worksheet.Cell(9, 2).Value =
+                application.MaritalStatus;
 
             worksheet.Cell(10, 1).Value = "العنوان";
-            worksheet.Cell(10, 2).Value = application.Address;
+            worksheet.Cell(10, 2).Value =
+                application.Address;
 
             worksheet.Cell(11, 1).Value = "رقم الهاتف";
-            worksheet.Cell(11, 2).Value = application.Phone;
+            worksheet.Cell(11, 2).Value =
+                application.Phone;
 
             worksheet.Cell(12, 1).Value = "البريد الإلكتروني";
-            worksheet.Cell(12, 2).Value = application.Email;
+            worksheet.Cell(12, 2).Value =
+                application.Email;
 
             worksheet.Cell(13, 1).Value = "الوظيفة المطلوبة";
-            worksheet.Cell(13, 2).Value = application.Position;
+            worksheet.Cell(13, 2).Value =
+                application.Position;
 
             worksheet.Cell(14, 1).Value = "الراتب المتوقع";
-            worksheet.Cell(14, 2).Value = application.ExpectedSalary;
+            worksheet.Cell(14, 2).Value =
+                application.ExpectedSalary;
 
             worksheet.Cell(15, 1).Value = "الحالة الصحية";
-            worksheet.Cell(15, 2).Value = application.HealthCondition;
+            worksheet.Cell(15, 2).Value =
+                application.HealthCondition;
 
             worksheet.Cell(16, 1).Value = "ملاحظات";
-            worksheet.Cell(16, 2).Value = application.Notes;
+            worksheet.Cell(16, 2).Value =
+                application.Notes;
 
+            // =================================================
+            // Qualifications
+            // =================================================
 
-            // المؤهلات
             var qualifications =
                 workbook.Worksheets.Add("المؤهلات");
 
@@ -551,16 +670,25 @@ namespace ReceptionSystem.Controllers
 
             foreach (var item in application.Qualifications)
             {
-                qualifications.Cell(row, 1).Value = item.Degree;
-                qualifications.Cell(row, 2).Value = item.Specialization;
-                qualifications.Cell(row, 3).Value = item.University;
-                qualifications.Cell(row, 4).Value = item.GraduationYear;
+                qualifications.Cell(row, 1).Value =
+                    item.Degree;
+
+                qualifications.Cell(row, 2).Value =
+                    item.Specialization;
+
+                qualifications.Cell(row, 3).Value =
+                    item.University;
+
+                qualifications.Cell(row, 4).Value =
+                    item.GraduationYear;
 
                 row++;
             }
 
+            // =================================================
+            // Courses
+            // =================================================
 
-            // الدورات
             var courses =
                 workbook.Worksheets.Add("الدورات");
 
@@ -574,15 +702,22 @@ namespace ReceptionSystem.Controllers
 
             foreach (var item in application.Courses)
             {
-                courses.Cell(row, 1).Value = item.CourseName;
-                courses.Cell(row, 2).Value = item.Organization;
-                courses.Cell(row, 3).Value = item.Duration;
+                courses.Cell(row, 1).Value =
+                    item.CourseName;
+
+                courses.Cell(row, 2).Value =
+                    item.Organization;
+
+                courses.Cell(row, 3).Value =
+                    item.Duration;
 
                 row++;
             }
 
+            // =================================================
+            // Experiences
+            // =================================================
 
-            // الخبرات
             var experiences =
                 workbook.Worksheets.Add("الخبرات");
 
@@ -598,25 +733,36 @@ namespace ReceptionSystem.Controllers
 
             foreach (var item in application.Experiences)
             {
-                experiences.Cell(row, 1).Value = item.CompanyName;
-                experiences.Cell(row, 2).Value = item.JobTitle;
-                experiences.Cell(row, 3).Value = item.FromDate;
+                experiences.Cell(row, 1).Value =
+                    item.CompanyName;
+
+                experiences.Cell(row, 2).Value =
+                    item.JobTitle;
+
+                experiences.Cell(row, 3).Value =
+                    item.FromDate;
 
                 if (item.ToDate.HasValue)
                 {
-                    experiences.Cell(row, 4).Value = item.ToDate.Value;
+                    experiences.Cell(row, 4).Value =
+                        item.ToDate.Value;
                 }
                 else
                 {
-                    experiences.Cell(row, 4).Value = "حتى الآن";
+                    experiences.Cell(row, 4).Value =
+                        "حتى الآن";
                 }
-                experiences.Cell(row, 5).Value = item.LastSalary;
+
+                experiences.Cell(row, 5).Value =
+                    item.LastSalary;
 
                 row++;
             }
 
+            // =================================================
+            // Languages
+            // =================================================
 
-            // اللغات
             var languages =
                 workbook.Worksheets.Add("اللغات");
 
@@ -630,15 +776,22 @@ namespace ReceptionSystem.Controllers
 
             foreach (var item in application.Languages)
             {
-                languages.Cell(row, 1).Value = item.LanguageName;
-                languages.Cell(row, 2).Value = item.Speaking;
-                languages.Cell(row, 3).Value = item.Writing;
+                languages.Cell(row, 1).Value =
+                    item.LanguageName;
+
+                languages.Cell(row, 2).Value =
+                    item.Speaking;
+
+                languages.Cell(row, 3).Value =
+                    item.Writing;
 
                 row++;
             }
 
+            // =================================================
+            // Computer Skills
+            // =================================================
 
-            // مهارات الكمبيوتر
             var skills =
                 workbook.Worksheets.Add("مهارات الكمبيوتر");
 
@@ -650,18 +803,22 @@ namespace ReceptionSystem.Controllers
 
             foreach (var item in application.ComputerSkills)
             {
-                skills.Cell(row, 1).Value = item.SkillName;
+                skills.Cell(row, 1).Value =
+                    item.SkillName;
 
                 row++;
             }
 
+            // =================================================
+            // Formatting
+            // =================================================
 
-            // تنسيق الجداول
             foreach (var sheet in workbook.Worksheets)
             {
                 sheet.RightToLeft = true;
 
-                var usedRange = sheet.RangeUsed();
+                var usedRange =
+                    sheet.RangeUsed();
 
                 if (usedRange != null)
                 {
@@ -680,8 +837,10 @@ namespace ReceptionSystem.Controllers
                 sheet.Columns().AdjustToContents();
             }
 
+            // =================================================
+            // Create Excel File
+            // =================================================
 
-            // إنشاء الملف
             using var stream = new MemoryStream();
 
             workbook.SaveAs(stream);
@@ -692,22 +851,23 @@ namespace ReceptionSystem.Controllers
             return File(
                 stream.ToArray(),
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                fileName
-            );
+                fileName);
         }
+
         // =====================================================
         // PRINT JOB APPLICATION
         // =====================================================
 
         public async Task<IActionResult> Print(int id)
         {
-            var application = await _context.JobApplications
-                .Include(x => x.Qualifications)
-                .Include(x => x.Courses)
-                .Include(x => x.Experiences)
-                .Include(x => x.Languages)
-                .Include(x => x.ComputerSkills)
-                .FirstOrDefaultAsync(x => x.Id == id);
+            var application =
+                await _context.JobApplications
+                    .Include(x => x.Qualifications)
+                    .Include(x => x.Courses)
+                    .Include(x => x.Experiences)
+                    .Include(x => x.Languages)
+                    .Include(x => x.ComputerSkills)
+                    .FirstOrDefaultAsync(x => x.Id == id);
 
             if (application == null)
             {
@@ -717,6 +877,5 @@ namespace ReceptionSystem.Controllers
             return View(application);
         }
     }
+}
 
-        }
-    

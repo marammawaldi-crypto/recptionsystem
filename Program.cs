@@ -3,71 +3,120 @@ using Microsoft.EntityFrameworkCore;
 using ReceptionSystem.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// =====================================================
+// MVC
+// =====================================================
+
 builder.Services.AddControllersWithViews();
 
-var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContext")
-    ?? throw new InvalidOperationException("Connection string 'ApplicationDbContext' not found.");
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+// =====================================================
+// Database
+// =====================================================
 
-// خدمات Identity
+var connectionString =
+    builder.Configuration.GetConnectionString("ApplicationDbContext")
+    ?? throw new InvalidOperationException(
+        "Connection string 'ApplicationDbContext' not found.");
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+
+// =====================================================
+// Identity
+// =====================================================
+
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 6;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequireUppercase = false;
+
     options.Lockout.MaxFailedAccessAttempts = 5;
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.DefaultLockoutTimeSpan =
+        TimeSpan.FromMinutes(5);
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
+
+// =====================================================
+// Authorization
+// =====================================================
+
 builder.Services.AddAuthorization();
 
-// توجيه غير المسجلين لصفحة الدخول بتاعتك
+
+// =====================================================
+// Identity Cookie
+// =====================================================
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
+    // المستخدم غير المسجل يتم تحويله إلى Login
     options.LoginPath = "/Account/Login";
+
+    // المستخدم المسجل ولكن ليس لديه الصلاحية
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
 
-// Add services to the container.
+
+// =====================================================
+// Build Application
+// =====================================================
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
 
-app.UseHttpsRedirection();
-app.UseRouting();
+// =====================================================
+// Seed Roles & Default Users
+// =====================================================
 
-app.UseAuthentication(); // لازم يكون قبل UseAuthorization
-app.UseAuthorization();
-
-app.MapStaticAssets();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Account}/{action=Login}/{id?}");
-// ===== Seed دور ومستخدم تجريبي =====
 using (var scope = app.Services.CreateScope())
 {
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+    var roleManager =
+        scope.ServiceProvider
+            .GetRequiredService<RoleManager<IdentityRole>>();
 
-    string[] roles = { "ADMIN", "USER", "RECEPTIONIST", "HR" };
+    var userManager =
+        scope.ServiceProvider
+            .GetRequiredService<UserManager<IdentityUser>>();
+
+
+    // -------------------------------------------------
+    // Roles
+    // -------------------------------------------------
+
+    string[] roles =
+    {
+        "ADMIN",
+        "USER",
+        "RECEPTIONIST"
+    };
+
     foreach (var role in roles)
     {
         if (!await roleManager.RoleExistsAsync(role))
-            await roleManager.CreateAsync(new IdentityRole(role));
+        {
+            await roleManager.CreateAsync(
+                new IdentityRole(role));
+        }
     }
 
+
+    // -------------------------------------------------
+    // Default Admin
+    // -------------------------------------------------
+
     var testEmail = "admin1@dama.com";
-    if (await userManager.FindByEmailAsync(testEmail) == null)
+
+    var existingUser =
+        await userManager.FindByEmailAsync(testEmail);
+
+    if (existingUser == null)
     {
         var testUser = new IdentityUser
         {
@@ -75,16 +124,161 @@ using (var scope = app.Services.CreateScope())
             Email = testEmail,
             EmailConfirmed = true
         };
-        var result = await userManager.CreateAsync(testUser, "Admin@123");
+
+        var result =
+            await userManager.CreateAsync(
+                testUser,
+                "Admin@123");
+
         if (result.Succeeded)
-            await userManager.AddToRoleAsync(testUser, "ADMIN");
+        {
+            await userManager.AddToRoleAsync(
+                testUser,
+                "ADMIN");
+        }
+    }
+    else
+    {
+        if (!await userManager.IsInRoleAsync(
+                existingUser,
+                "ADMIN"))
+        {
+            await userManager.AddToRoleAsync(
+                existingUser,
+                "ADMIN");
+        }
     }
 
-   
+
+    // -------------------------------------------------
+    // Default Receptionist
+    // -------------------------------------------------
+
+    var receptionEmail = "reception@dama.com";
+
+    var existingReception =
+        await userManager.FindByEmailAsync(receptionEmail);
+
+    if (existingReception == null)
+    {
+        var receptionUser = new IdentityUser
+        {
+            UserName = receptionEmail,
+            Email = receptionEmail,
+            EmailConfirmed = true
+        };
+
+        var result =
+            await userManager.CreateAsync(
+                receptionUser,
+                "Reception@123");
+
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(
+                receptionUser,
+                "RECEPTIONIST");
+        }
+    }
+    else
+    {
+        if (!await userManager.IsInRoleAsync(
+                existingReception,
+                "RECEPTIONIST"))
+        {
+            await userManager.AddToRoleAsync(
+                existingReception,
+                "RECEPTIONIST");
+        }
+    }
+
+
+    // -------------------------------------------------
+    // Default User
+    // -------------------------------------------------
+
+    var normalUserEmail = "user@dama.com";
+
+    var existingNormalUser =
+        await userManager.FindByEmailAsync(normalUserEmail);
+
+    if (existingNormalUser == null)
+    {
+        var normalUser = new IdentityUser
+        {
+            UserName = normalUserEmail,
+            Email = normalUserEmail,
+            EmailConfirmed = true
+        };
+
+        var result =
+            await userManager.CreateAsync(
+                normalUser,
+                "User@123");
+
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(
+                normalUser,
+                "USER");
+        }
+    }
+    else
+    {
+        if (!await userManager.IsInRoleAsync(
+                existingNormalUser,
+                "USER"))
+        {
+            await userManager.AddToRoleAsync(
+                existingNormalUser,
+                "USER");
+        }
+    }
 }
 
 
- 
+// =====================================================
+// HTTP Request Pipeline
+// =====================================================
 
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+
+app.UseRouting();
+
+
+// =====================================================
+// Authentication & Authorization
+// =====================================================
+
+app.UseAuthentication();
+
+app.UseAuthorization();
+
+
+// =====================================================
+// Static Files
+// =====================================================
+
+app.MapStaticAssets();
+
+
+// =====================================================
+// Default Route
+// =====================================================
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Account}/{action=Login}/{id?}");
+
+
+// =====================================================
+// Run
+// =====================================================
 
 app.Run();
