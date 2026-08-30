@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReceptionSystem.Data;
 using ReceptionSystem.Models;
+using ReceptionSystem.Services;
 using System;
 using System.IO;
 using System.Linq;
@@ -23,13 +24,16 @@ namespace ReceptionSystem.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _env;
+        private readonly JobApplicationNumberGenerator _numberGenerator;
 
         public JobApplicationsController(
             ApplicationDbContext context,
-            IWebHostEnvironment env)
+            IWebHostEnvironment env,
+            JobApplicationNumberGenerator numberGenerator)
         {
             _context = context;
             _env = env;
+            _numberGenerator = numberGenerator;
         }
 
         // =====================================================
@@ -242,6 +246,18 @@ namespace ReceptionSystem.Controllers
             }
 
             // -------------------------------------------------
+<<<<<<< HEAD
+=======
+            // Assign a sequential application number (from DB sequence)
+            // Format: DAMA/HR/{n}
+            // -------------------------------------------------
+
+            jobApplication.ApplicationNumber =
+                await _numberGenerator.GenerateNextNumberAsync("HR");
+
+
+            // -------------------------------------------------
+>>>>>>> main
             // Save Job Application
             // -------------------------------------------------
 
@@ -249,6 +265,7 @@ namespace ReceptionSystem.Controllers
 
             await _context.SaveChangesAsync();
 
+<<<<<<< HEAD
             // -------------------------------------------------
             // Assign Application Number
             // Format: DAMA/HR/{Id}
@@ -260,6 +277,8 @@ namespace ReceptionSystem.Controllers
             _context.JobApplications.Update(jobApplication);
 
             await _context.SaveChangesAsync();
+=======
+>>>>>>> main
 
             // -------------------------------------------------
             // Success
@@ -314,9 +333,19 @@ namespace ReceptionSystem.Controllers
                 return NotFound();
             }
 
+<<<<<<< HEAD
             var job =
                 await _context.JobApplications
                     .FindAsync(id.Value);
+=======
+            var job = await _context.JobApplications
+                .Include(j => j.Qualifications)
+                .Include(j => j.Courses)
+                .Include(j => j.Experiences)
+                .Include(j => j.Languages)
+                .Include(j => j.ComputerSkills)
+                .FirstOrDefaultAsync(j => j.Id == id.Value);
+>>>>>>> main
 
             if (job == null)
             {
@@ -337,10 +366,14 @@ namespace ReceptionSystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+<<<<<<< HEAD
         public async Task<IActionResult> Edit(
             int id,
             JobApplication jobApplication,
             IFormFile? CvFile)
+=======
+        public async Task<IActionResult> Edit(int id, JobApplication jobApplication)
+>>>>>>> main
         {
             if (id != jobApplication.Id)
             {
@@ -445,6 +478,7 @@ namespace ReceptionSystem.Controllers
                 return View(jobApplication);
             }
 
+<<<<<<< HEAD
             // -------------------------------------------------
             // Handle CV upload
             // -------------------------------------------------
@@ -495,6 +529,24 @@ namespace ReceptionSystem.Controllers
             // -------------------------------------------------
             // Update
             // -------------------------------------------------
+=======
+            // Preserve fields that the Edit form does not include
+            // (CV data + the sequential ApplicationNumber must never change on Edit)
+            var existing = await _context.JobApplications
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (existing == null)
+            {
+                return NotFound();
+            }
+
+            jobApplication.CvFileData = existing.CvFileData;
+            jobApplication.CvFileName = existing.CvFileName;
+            jobApplication.CvContentType = existing.CvContentType;
+            jobApplication.CvFilePath = existing.CvFilePath;
+            jobApplication.ApplicationNumber = existing.ApplicationNumber;
+>>>>>>> main
 
             try
             {
@@ -507,8 +559,12 @@ namespace ReceptionSystem.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
+<<<<<<< HEAD
                 if (!_context.JobApplications
                     .Any(e => e.Id == jobApplication.Id))
+=======
+                if (!_context.JobApplications.Any(e => e.Id == jobApplication.Id))
+>>>>>>> main
                 {
                     return NotFound();
                 }
@@ -520,9 +576,14 @@ namespace ReceptionSystem.Controllers
         }
 
         // =====================================================
+<<<<<<< HEAD
         // GET: Manage
         // =====================================================
 
+=======
+        // GET: Manage (redirect to Edit)
+        // =====================================================
+>>>>>>> main
         public IActionResult Manage(int id)
         {
             return RedirectToAction(
@@ -877,5 +938,9 @@ namespace ReceptionSystem.Controllers
             return View(application);
         }
     }
+<<<<<<< HEAD
 }
 
+=======
+}
+>>>>>>> main

@@ -15,7 +15,51 @@ namespace ReceptionSystem.Controllers
     {
         private readonly ApplicationDbContext _context;
 
+<<<<<<< HEAD
         public VisitorsController(ApplicationDbContext context)
+=======
+
+    // GET: Visitors
+    public async Task<IActionResult> Index()
+    {
+        var visitors = await _context.Visitors
+            .OrderByDescending(v => v.Id)
+            .ToListAsync();
+
+        return View(visitors);
+    }
+
+
+    // GET: Visitors/Details/5
+    public async Task<IActionResult> Details(int? id)
+    {
+        if (id == null)
+            return NotFound();
+
+        var visitor = await _context.Visitors
+            .FirstOrDefaultAsync(m => m.Id == id);
+
+        if (visitor == null)
+            return NotFound();
+
+        return View(visitor);
+    }
+
+
+    // GET: Visitors/Create
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+
+    // POST: Visitors/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(Visitor visitor)
+    {
+        if (ModelState.IsValid)
+>>>>>>> main
         {
             _context = context;
         }

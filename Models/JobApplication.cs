@@ -9,7 +9,10 @@ namespace ReceptionSystem.Models
 
         [Key]
         public int Id { get; set; }
-
+        [Required]
+        [Display(Name = "تاريخ تقديم الطلب")]
+        [DataType(DataType.Date)]
+        public DateTime ApplicationSubmissionDate { get; set; }
         [Display(Name = "رقم الطلب")]
         public string ApplicationNumber { get; set; } = string.Empty;
 
@@ -85,6 +88,7 @@ namespace ReceptionSystem.Models
         [Display(Name = "ملاحظات")]
         public string? Notes { get; set; }
 
+
         // CV
 
         [Display(Name = "السيرة الذاتية")]
@@ -96,8 +100,6 @@ namespace ReceptionSystem.Models
 
         // Optional file path when storing CVs on disk or a CDN
         public string? CvFilePath { get; set; }
-
-        // Other Sections
 
         public List<Language> Languages { get; set; } = new();
 
