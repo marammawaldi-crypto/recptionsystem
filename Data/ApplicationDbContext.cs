@@ -21,9 +21,33 @@ namespace ReceptionSystem.Data
         public DbSet<Language> Languages { get; set; }
         public DbSet<ComputerSkill> ComputerSkills { get; set; }
 
+        // =====================================================
+        // Permissions
+        // =====================================================
+
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder); // لازم يفضل قبل أي كود تاني عشان Identity يعمل جداوله
+            base.OnModelCreating(modelBuilder);
+
+
+            // =====================================================
+            // RolePermission → Permission
+            // =====================================================
+
+            modelBuilder.Entity<RolePermission>()
+                .HasOne(rp => rp.Permission)
+                .WithMany()
+                .HasForeignKey(rp => rp.PermissionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+            // =====================================================
+            // Driving License Types
+            // =====================================================
 
             modelBuilder.Entity<DrivingLicenseType>().HasData(
                 new DrivingLicenseType { Id = 1, Category = "A" },

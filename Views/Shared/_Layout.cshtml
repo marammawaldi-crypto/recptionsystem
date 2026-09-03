@@ -1,18 +1,76 @@
-﻿<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+﻿@using System.Security.Claims
+@using ReceptionSystem.Services
+@inject PermissionService PermissionService
 
-    <title>@ViewData["Title"] - ReceptionSystem</title>
+@{
+    ViewData["Title"] ??= "ReceptionSystem";
+
+    var isAuthenticated =
+        User.Identity?.IsAuthenticated ?? false;
+
+    var userId =
+        User.FindFirstValue(
+            ClaimTypes.NameIdentifier);
+
+    // =====================================================
+    // User Role
+    // =====================================================
+
+    var isAdmin =
+        User.IsInRole("ADMIN");
+
+    var canViewHome = false;
+    var canViewVisitors = false;
+    var canViewJobApplications = false;
+
+    if (isAuthenticated && !string.IsNullOrEmpty(userId))
+    {
+        canViewHome =
+            await PermissionService.HasPermissionAsync(
+                userId,
+                "Home.View");
+
+        canViewVisitors =
+            await PermissionService.HasPermissionAsync(
+                userId,
+                "Visitors.View");
+
+        canViewJobApplications =
+            await PermissionService.HasPermissionAsync(
+                userId,
+                "JobApplications.View");
+    }
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>
+        @ViewData["Title"] - ReceptionSystem
+    </title>
 
     <script type="importmap"></script>
 
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/ReceptionSystem.styles.css" asp-append-version="true" />
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/ReceptionSystem.styles.css"
+          asp-append-version="true" />
 
     <style>
+
         html,
         body {
             height: 100%;
@@ -65,22 +123,69 @@
         footer {
             flex-shrink: 0;
         }
+
     </style>
+
 </head>
 
 <body>
 
     <header>
+
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark dama-navbar">
 
             <div class="container-fluid">
 
-                <a class="navbar-brand"
-                   asp-area=""
-                   asp-controller="Home"
-                   asp-action="Index">
-                    نظام الاستقبال
-                </a>
+                <!-- =====================================================
+                     Logo / Brand
+                     ===================================================== -->
+
+                @if (canViewHome)
+                {
+                    <a class="navbar-brand"
+                       asp-area=""
+                       asp-controller="Home"
+                       asp-action="Index">
+
+                        نظام الاستقبال
+
+                    </a>
+                }
+                else if (canViewVisitors)
+                {
+                    <a class="navbar-brand"
+                       asp-area=""
+                       asp-controller="Visitors"
+                       asp-action="Index">
+
+                        نظام الاستقبال
+
+                    </a>
+                }
+                else if (canViewJobApplications)
+                {
+                    <a class="navbar-brand"
+                       asp-area=""
+                       asp-controller="JobApplications"
+                       asp-action="Index">
+
+                        نظام الاستقبال
+
+                    </a>
+                }
+                else
+                {
+                    <span class="navbar-brand">
+
+                        نظام الاستقبال
+
+                    </span>
+                }
+
+
+                <!-- =====================================================
+                     Mobile Menu Button
+                     ===================================================== -->
 
                 <button class="navbar-toggler"
                         type="button"
@@ -94,27 +199,135 @@
 
                 </button>
 
+
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
 
                     <ul class="navbar-nav flex-grow-1">
 
+
                         @if (!(ViewContext.RouteData.Values["controller"]?.ToString() == "Account"
-    && ViewContext.RouteData.Values["action"]?.ToString() == "Login"))
+                              && ViewContext.RouteData.Values["action"]?.ToString() == "Login"))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Home" asp-action="Index">الرئيسية</a>
-                            </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Visitors" asp-action="Index">الزوار</a>
-                            </li>
+                            <!-- =====================================================
+                                 الرئيسية
+                                 ===================================================== -->
 
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="JobApplications" asp-action="Index">طلبات التوظيف</a>
-                            </li>
+                            @if (canViewHome)
+                            {
+                                <li class="nav-item">
+
+                                    <a class="nav-link"
+                                       asp-controller="Home"
+                                       asp-action="Index">
+
+                                        الرئيسية
+
+                                    </a>
+
+                                </li>
+                            }
+
+
+                            <!-- =====================================================
+                                 الزوار
+                                 ===================================================== -->
+
+                            @if (canViewVisitors)
+                            {
+                                <li class="nav-item">
+
+                                    <a class="nav-link"
+                                       asp-controller="Visitors"
+                                       asp-action="Index">
+
+                                        الزوار
+
+                                    </a>
+
+                                </li>
+                            }
+
+
+                            <!-- =====================================================
+                                 طلبات التوظيف
+                                 ===================================================== -->
+
+                            @if (canViewJobApplications)
+                            {
+                                <li class="nav-item">
+
+                                    <a class="nav-link"
+                                       asp-controller="JobApplications"
+                                       asp-action="Index">
+
+                                        طلبات التوظيف
+
+                                    </a>
+
+                                </li>
+                            }
+
+
+                            <!-- =====================================================
+                                 المستخدمون - ADMIN فقط
+                                 ===================================================== -->
+
+                            @if (isAdmin)
+                            {
+                                <li class="nav-item">
+
+                                    <a class="nav-link"
+                                       asp-controller="Users"
+                                       asp-action="Index">
+
+                                        المستخدمون
+
+                                    </a>
+
+                                </li>
+                            }
+
+
+                            <!-- =====================================================
+                                 تسجيل الخروج
+                                 ===================================================== -->
+
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                <li class="nav-item">
+
+                                    <form asp-controller="Account"
+                                          asp-action="Logout"
+                                          method="post"
+                                          class="d-inline">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <button type="submit"
+                                                class="btn btn-link nav-link">
+
+                                            تسجيل الخروج
+
+                                        </button>
+
+                                    </form>
+
+                                </li>
+                            }
+
                         }
+
+
+                        <!-- =====================================================
+                             Mini Logo
+                             ===================================================== -->
+
                         <li class="nav-logo">
-                            <img src="~/images/minilogo.png" class="minilogo" />
+
+                            <img src="~/images/minilogo.png"
+                                 class="minilogo" />
+
                         </li>
 
                     </ul>
@@ -124,10 +337,14 @@
             </div>
 
         </nav>
+
     </header>
 
 
-    <!-- منطقة محتوى الصفحة -->
+    <!-- =====================================================
+         منطقة محتوى الصفحة
+         ===================================================== -->
+
     <div class="page-content">
 
         <div class="container">
@@ -143,7 +360,11 @@
     </div>
 
 
-    @* <!-- Footer -->
+    @*
+    <!-- =====================================================
+         Footer
+         ===================================================== -->
+
     <footer class="border-top footer text-muted">
 
         <div class="container text-center">
@@ -152,16 +373,25 @@
 
         </div>
 
-    </footer> *@
+    </footer>
+    *@
 
+
+    <!-- =====================================================
+         Scripts
+         ===================================================== -->
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/site.js"
+            asp-append-version="true"></script>
 
-    @await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync(
+        "Scripts",
+        required: false)
 
 </body>
+
 </html>

@@ -371,8 +371,8 @@
                                     <tr>
                                         <td>@exp.CompanyName</td>
                                         <td>@exp.JobTitle</td>
-                                        <td>@(exp.FromDate?.ToString("d") ?? "")</td>
-                                        <td>@(exp.ToDate?.ToString("d") ?? "")</td>
+                                        @(exp.FromDate.HasValue ? exp.FromDate.Value.ToString("d") : "")
+                                        @(exp.ToDate.HasValue ? exp.ToDate.Value.ToString("d") : "")
                                         <td>@exp.LastSalary</td>
 
                                         <td>

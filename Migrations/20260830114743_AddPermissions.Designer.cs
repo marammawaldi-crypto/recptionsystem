@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReceptionSystem.Data;
 
@@ -11,9 +12,11 @@ using ReceptionSystem.Data;
 namespace ReceptionSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260830114743_AddPermissions")]
+    partial class AddPermissions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -531,28 +534,6 @@ namespace ReceptionSystem.Migrations
                     b.ToTable("Qualifications");
                 });
 
-            modelBuilder.Entity("ReceptionSystem.Models.RolePermission", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("PermissionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PermissionId");
-
-                    b.ToTable("RolePermissions");
-                });
-
             modelBuilder.Entity("ReceptionSystem.Models.Visitor", b =>
                 {
                     b.Property<int>("Id")
@@ -705,17 +686,6 @@ namespace ReceptionSystem.Migrations
                         .IsRequired();
 
                     b.Navigation("JobApplication");
-                });
-
-            modelBuilder.Entity("ReceptionSystem.Models.RolePermission", b =>
-                {
-                    b.HasOne("ReceptionSystem.Models.Permission", "Permission")
-                        .WithMany()
-                        .HasForeignKey("PermissionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Permission");
                 });
 
             modelBuilder.Entity("ReceptionSystem.Models.JobApplication", b =>

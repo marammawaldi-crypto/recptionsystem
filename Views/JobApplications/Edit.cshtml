@@ -60,7 +60,7 @@
                 <div class="col-md-6 form-group mb-3">
                     <label asp-for="DateOfBirth">تاريخ الولادة</label>
                     <input asp-for="DateOfBirth" type="date" class="form-control"
-                           value="@(Model.DateOfBirth?.ToString("yyyy-MM-dd"))" />
+                           value="@(Model.DateOfBirth.HasValue ? Model.DateOfBirth.Value.ToString("yyyy-MM-dd") : "")" />
                     <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                 </div>
 
@@ -143,7 +143,7 @@
                 <div class="col-md-6 form-group mb-3">
                     <label asp-for="AvailableStartDate" class="control-label">تاريخ مباشرة العمل</label>
                     <input asp-for="AvailableStartDate" type="date" class="form-control"
-                           value="@(Model.AvailableStartDate?.ToString("yyyy-MM-dd"))" />
+                           value="@(Model.AvailableStartDate.HasValue ? Model.AvailableStartDate.Value.ToString("yyyy-MM-dd") : "")" />
                     <span asp-validation-for="AvailableStartDate" class="text-danger"></span>
                 </div>
 
@@ -334,8 +334,8 @@
                                     <input name="Experiences[@i].CompanyName" class="form-control" value="@ex.CompanyName" />
                                 </td>
                                 <td><input name="Experiences[@i].JobTitle" class="form-control" value="@ex.JobTitle" /></td>
-                                <td><input name="Experiences[@i].FromDate" type="date" class="form-control" value="@(ex.FromDate?.ToString("yyyy-MM-dd"))" /></td>
-                                <td><input name="Experiences[@i].ToDate" type="date" class="form-control" value="@(ex.ToDate?.ToString("yyyy-MM-dd"))" /></td>
+                                value="@(ex.FromDate.HasValue ? ex.FromDate.Value.ToString("yyyy-MM-dd") : "")" />
+                                value="@(ex.ToDate.HasValue ? ex.ToDate.Value.ToString("yyyy-MM-dd") : "")" />
                                 <td><input name="Experiences[@i].LastSalary" type="text" class="form-control" value="@ex.LastSalary" /></td>
                             </tr>
                         }

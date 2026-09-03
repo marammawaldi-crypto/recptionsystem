@@ -1,11 +1,12 @@
-
+using ReceptionSystem.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReceptionSystem.Data;
 using ReceptionSystem.Models;
-using System;
+using ReceptionSystem.Services;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ReceptionSystem.Controllers
@@ -14,71 +15,55 @@ namespace ReceptionSystem.Controllers
     public class VisitorsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly PermissionService _permissionService;
 
-<<<<<<< HEAD
-        public VisitorsController(ApplicationDbContext context)
-=======
-
-    // GET: Visitors
-    public async Task<IActionResult> Index()
-    {
-        var visitors = await _context.Visitors
-            .OrderByDescending(v => v.Id)
-            .ToListAsync();
-
-        return View(visitors);
-    }
-
-
-    // GET: Visitors/Details/5
-    public async Task<IActionResult> Details(int? id)
-    {
-        if (id == null)
-            return NotFound();
-
-        var visitor = await _context.Visitors
-            .FirstOrDefaultAsync(m => m.Id == id);
-
-        if (visitor == null)
-            return NotFound();
-
-        return View(visitor);
-    }
-
-
-    // GET: Visitors/Create
-    public IActionResult Create()
-    {
-        return View();
-    }
-
-
-    // POST: Visitors/Create
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Visitor visitor)
-    {
-        if (ModelState.IsValid)
->>>>>>> main
+        public VisitorsController(
+            ApplicationDbContext context,
+            PermissionService permissionService)
         {
             _context = context;
+            _permissionService = permissionService;
         }
 
         // =====================================================
-        // GET: VISITORS
+        // GET: Visitors
         // =====================================================
 
+        [Permission("Visitors.View")]
         public async Task<IActionResult> Index()
         {
-            return View(
-                await _context.Visitors.ToListAsync()
-            );
+            var visitors = await _context.Visitors
+                .OrderByDescending(v => v.Id)
+                .ToListAsync();
+
+            // -------------------------------------------------
+            // Check Delete Permission
+            // -------------------------------------------------
+
+            var userId = User.FindFirstValue(
+                ClaimTypes.NameIdentifier);
+
+            var canDelete = false;
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                canDelete =
+                    await _permissionService.HasPermissionAsync(
+                        userId,
+                        "Visitors.Delete");
+            }
+
+            // إرسال النتيجة إلى View
+            ViewBag.CanDelete = canDelete;
+
+            return View(visitors);
         }
 
         // =====================================================
-        // GET: VISITORS/Details/5
+        // GET: Visitors/Details/5
         // =====================================================
 
+        [Permission("Visitors.Details")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -86,9 +71,8 @@ namespace ReceptionSystem.Controllers
                 return NotFound();
             }
 
-            var visitor =
-                await _context.Visitors
-                    .FirstOrDefaultAsync(v => v.Id == id);
+            var visitor = await _context.Visitors
+                .FirstOrDefaultAsync(v => v.Id == id);
 
             if (visitor == null)
             {
@@ -99,20 +83,22 @@ namespace ReceptionSystem.Controllers
         }
 
         // =====================================================
-        // GET: VISITORS/Create
+        // GET: Visitors/Create
         // =====================================================
 
+        [Permission("Visitors.Create")]
         public IActionResult Create()
         {
             return View();
         }
 
         // =====================================================
-        // POST: VISITORS/Create
+        // POST: Visitors/Create
         // =====================================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Permission("Visitors.Create")]
         public async Task<IActionResult> Create(Visitor visitor)
         {
             if (!ModelState.IsValid)
@@ -131,9 +117,10 @@ namespace ReceptionSystem.Controllers
         }
 
         // =====================================================
-        // GET: VISITORS/Edit/5
+        // GET: Visitors/Edit/5
         // =====================================================
 
+        [Permission("Visitors.Edit")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -141,8 +128,7 @@ namespace ReceptionSystem.Controllers
                 return NotFound();
             }
 
-            var visitor =
-                await _context.Visitors.FindAsync(id.Value);
+            var visitor = await _context.Visitors.FindAsync(id.Value);
 
             if (visitor == null)
             {
@@ -153,11 +139,12 @@ namespace ReceptionSystem.Controllers
         }
 
         // =====================================================
-        // POST: VISITORS/Edit/5
+        // POST: Visitors/Edit/5
         // =====================================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Permission("Visitors.Edit")]
         public async Task<IActionResult> Edit(
             int id,
             Visitor visitor)
@@ -183,8 +170,7 @@ namespace ReceptionSystem.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_context.Visitors
-                    .Any(e => e.Id == visitor.Id))
+                if (!_context.Visitors.Any(e => e.Id == visitor.Id))
                 {
                     return NotFound();
                 }
@@ -196,9 +182,10 @@ namespace ReceptionSystem.Controllers
         }
 
         // =====================================================
-        // GET: VISITORS/Delete/5
+        // GET: Visitors/Delete/5
         // =====================================================
 
+        [Permission("Visitors.Delete")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -206,9 +193,8 @@ namespace ReceptionSystem.Controllers
                 return NotFound();
             }
 
-            var visitor =
-                await _context.Visitors
-                    .FirstOrDefaultAsync(v => v.Id == id);
+            var visitor = await _context.Visitors
+                .FirstOrDefaultAsync(v => v.Id == id);
 
             if (visitor == null)
             {
@@ -219,16 +205,16 @@ namespace ReceptionSystem.Controllers
         }
 
         // =====================================================
-        // POST: VISITORS/Delete/5
+        // POST: Visitors/Delete/5
         // =====================================================
 
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Permission("Visitors.Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var visitor =
-                await _context.Visitors.FindAsync(id);
+            var visitor = await _context.Visitors.FindAsync(id);
 
             if (visitor == null)
             {
@@ -246,4 +232,3 @@ namespace ReceptionSystem.Controllers
         }
     }
 }
-

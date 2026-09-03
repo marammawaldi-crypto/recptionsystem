@@ -6,15 +6,27 @@
 
 <div class="container-fluid mt-4" dir="rtl" lang="ar">
 
+    <!-- ===================================================== -->
+    <!-- Header -->
+    <!-- ===================================================== -->
+
     <div class="d-flex justify-content-between align-items-center mb-3">
+
         <h1>طلبات التوظيف</h1>
 
         <a asp-action="Create" class="btn btn-primary">
             + إنشاء جديد
         </a>
+
     </div>
 
+
+    <!-- ===================================================== -->
+    <!-- Table -->
+    <!-- ===================================================== -->
+
     <div class="card shadow-sm">
+
         <div class="card-body">
 
             <div class="table-responsive dama-table-scroll">
@@ -22,66 +34,71 @@
                 <table class="table table-bordered table-striped table-hover align-middle text-nowrap">
 
                     <thead class="dama-thead-sticky">
+
                         <tr>
+
                             <th>رقم الطلب</th>
-
                             <th>تاريخ الطلب</th>
-
                             <th>الاسم الكامل</th>
-
                             <th>الجنس</th>
-
                             <th>الجنسية</th>
-
                             <th>مكان الولادة</th>
-
                             <th>تاريخ الميلاد</th>
-
                             <th>الرقم القومي</th>
-
                             <th>الحالة الاجتماعية</th>
-
                             <th>العنوان</th>
-
                             <th>الهاتف</th>
-
                             <th>البريد الإلكتروني</th>
-
                             <th>رخصة القيادة</th>
-
                             <th>الوظيفة المتقدم لها</th>
 
+                            <!-- المؤهلات -->
+                            <th>المؤهلات العلمية</th>
+
+                            <!-- الخبرات -->
+                            <th>الخبرات العملية</th>
+
                             <th>الراتب المتوقع</th>
-
                             <th>تاريخ مباشرة العمل</th>
-
                             <th>يعمل حالياً</th>
-
                             <th>الحالة الصحية</th>
-
                             <th>سوابق قضائية</th>
-
                             <th>ملاحظات</th>
-
                             <th>السيرة الذاتية</th>
-
                             <th>الإجراءات</th>
 
                         </tr>
+
                     </thead>
+
 
                     <tbody>
 
                         @foreach (var item in Model)
                         {
                             <tr>
+
+                                <!-- ================================================= -->
+                                <!-- رقم الطلب -->
+                                <!-- ================================================= -->
+
                                 <td>
                                     @Html.DisplayFor(modelItem => item.ApplicationNumber)
                                 </td>
 
+
+                                <!-- ================================================= -->
+                                <!-- تاريخ الطلب -->
+                                <!-- ================================================= -->
+
                                 <td>
                                     @Html.DisplayFor(modelItem => item.ApplicationDate)
                                 </td>
+
+
+                                <!-- ================================================= -->
+                                <!-- الاسم -->
+                                <!-- ================================================= -->
 
                                 <td>
                                     <strong>
@@ -89,116 +106,454 @@
                                     </strong>
                                 </td>
 
+
+                                <!-- ================================================= -->
+                                <!-- الجنس -->
+                                <!-- ================================================= -->
+
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Gender)
                                 </td>
+
+
+                                <!-- ================================================= -->
+                                <!-- الجنسية -->
+                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Nationality)
                                 </td>
 
+
+                                <!-- ================================================= -->
+                                <!-- مكان الولادة -->
+                                <!-- ================================================= -->
+
                                 <td>
                                     @Html.DisplayFor(modelItem => item.PlaceOfBirth)
                                 </td>
+
+
+                                <!-- ================================================= -->
+                                <!-- تاريخ الميلاد -->
+                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.DateOfBirth)
                                 </td>
 
+
+                                <!-- ================================================= -->
+                                <!-- الرقم الوطني -->
+                                <!-- ================================================= -->
+
                                 <td>
                                     @Html.DisplayFor(modelItem => item.NationalNumber)
                                 </td>
+
+
+                                <!-- ================================================= -->
+                                <!-- الحالة الاجتماعية -->
+                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.MaritalStatus)
                                 </td>
 
+
+                                <!-- ================================================= -->
+                                <!-- العنوان -->
+                                <!-- ================================================= -->
+
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Address)
                                 </td>
+
+
+                                <!-- ================================================= -->
+                                <!-- الهاتف -->
+                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Phone)
                                 </td>
 
+
+                                <!-- ================================================= -->
+                                <!-- البريد الإلكتروني -->
+                                <!-- ================================================= -->
+
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Email)
                                 </td>
+
+
+                                <!-- ================================================= -->
+                                <!-- رخصة القيادة -->
+                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.DrivingLicense)
                                 </td>
 
+
+                                <!-- ================================================= -->
+                                <!-- الوظيفة -->
+                                <!-- ================================================= -->
+
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Position)
                                 </td>
+
+
+                                <!-- ================================================= -->
+                                <!-- المؤهلات العلمية -->
+                                <!-- ================================================= -->
+
+                                <td style="min-width: 180px; white-space: normal;">
+
+                                    @if (item.Qualifications != null && item.Qualifications.Any())
+                                    {
+                                        var qualifications = item.Qualifications.ToList();
+
+                                        var qualificationId = $"qualifications-{item.Id}";
+
+                                        <!-- جميع المؤهلات مخفية في البداية -->
+
+                                        <div id="@qualificationId"
+                                             class="more-content"
+                                             style="display: none;">
+
+                                            @foreach (var qualification in qualifications)
+                                            {
+                                                <div class="qualification-item mb-2 p-2 border rounded">
+
+                                                    @if (!string.IsNullOrWhiteSpace(qualification.Degree))
+                                                    {
+                                                        <div>
+                                                            <strong>الدرجة:</strong>
+                                                            @qualification.Degree
+                                                        </div>
+                                                    }
+
+                                                    @if (!string.IsNullOrWhiteSpace(qualification.Specialization))
+                                                    {
+                                                        <div>
+                                                            <strong>الاختصاص:</strong>
+                                                            @qualification.Specialization
+                                                        </div>
+                                                    }
+
+                                                    @if (!string.IsNullOrWhiteSpace(qualification.University))
+                                                    {
+                                                        <div>
+                                                            <strong>الجامعة / المعهد:</strong>
+                                                            @qualification.University
+                                                        </div>
+                                                    }
+
+                                                    @if (!string.IsNullOrWhiteSpace(qualification.GraduationYear))
+                                                    {
+                                                        <div>
+                                                            <strong>سنة التخرج:</strong>
+                                                            @qualification.GraduationYear
+                                                        </div>
+                                                    }
+
+                                                </div>
+                                            }
+
+                                        </div>
+
+                                        <!-- زر عرض المزيد -->
+
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-primary"
+                                                onclick="toggleContent('@qualificationId', this)">
+
+                                            عرض المزيد
+
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">
+                                            لا يوجد
+                                        </span>
+                                    }
+
+                                </td>
+
+                                <!-- ================================================= -->
+                                <!-- الخبرات العملية -->
+                                <!-- ================================================= -->
+
+                                <td style="min-width: 180px; white-space: normal;">
+
+                                    @if (item.Experiences != null && item.Experiences.Any())
+                                    {
+                                        var experiences = item.Experiences.ToList();
+
+                                        var experienceId = $"experiences-{item.Id}";
+
+                                        <!-- جميع الخبرات مخفية في البداية -->
+
+                                        <div id="@experienceId"
+                                             class="more-content"
+                                             style="display: none;">
+
+                                            @foreach (var experience in experiences)
+                                            {
+                                                <div class="experience-item mb-2 p-2 border rounded">
+
+                                                    @if (!string.IsNullOrWhiteSpace(experience.CompanyName))
+                                                    {
+                                                        <div>
+                                                            <strong>الشركة:</strong>
+                                                            @experience.CompanyName
+                                                        </div>
+                                                    }
+
+                                                    @if (!string.IsNullOrWhiteSpace(experience.JobTitle))
+                                                    {
+                                                        <div>
+                                                            <strong>المسمى الوظيفي:</strong>
+                                                            @experience.JobTitle
+                                                        </div>
+                                                    }
+
+                                                    @if (experience.FromDate.HasValue)
+                                                    {
+                                                        <div>
+                                                            <strong>من:</strong>
+                                                            @experience.FromDate.Value.ToString("yyyy-MM-dd")
+                                                        </div>
+                                                    }
+
+                                                    <div>
+                                                        <strong>إلى:</strong>
+
+                                                        @if (experience.ToDate.HasValue)
+                                                        {
+                                                            @experience.ToDate.Value.ToString("yyyy-MM-dd")
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>حتى الآن</span>
+                                                        }
+
+                                                    </div>
+
+                                                    @if (!string.IsNullOrWhiteSpace(experience.LastSalary))
+                                                    {
+                                                        <div>
+                                                            <strong>آخر راتب:</strong>
+                                                            @experience.LastSalary
+                                                        </div>
+                                                    }
+
+                                                </div>
+                                            }
+
+                                        </div>
+
+                                        <!-- زر عرض المزيد -->
+
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-primary"
+                                                onclick="toggleContent('@experienceId', this)">
+
+                                            عرض المزيد
+
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">
+                                            لا يوجد
+                                        </span>
+                                    }
+
+                                </td>
+
+                                <!-- ================================================= -->
+                                <!-- الراتب المتوقع -->
+                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.ExpectedSalary)
                                 </td>
 
+
+                                <!-- ================================================= -->
+                                <!-- تاريخ مباشرة العمل -->
+                                <!-- ================================================= -->
+
                                 <td>
                                     @Html.DisplayFor(modelItem => item.AvailableStartDate)
                                 </td>
 
+
+                                <!-- ================================================= -->
+                                <!-- يعمل حالياً -->
+                                <!-- ================================================= -->
+
                                 <td class="text-center">
+
                                     @if (item.CurrentlyWorking)
                                     {
                                         <span class="badge bg-success">
-                                            Yes
+                                            نعم
                                         </span>
                                     }
                                     else
                                     {
                                         <span class="badge bg-secondary">
-                                            No
+                                            لا
                                         </span>
                                     }
+
                                 </td>
+
+
+                                <!-- ================================================= -->
+                                <!-- الحالة الصحية -->
+                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.HealthCondition)
                                 </td>
 
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.CriminalRecord)
-                                </td>
+
+                                <!-- ================================================= -->
+                                <!-- سوابق قضائية -->
+                                <!-- ================================================= -->
 
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Notes)
-                                </td>
 
-                                <td>
-                                    @if (item.CvFileData != null && item.CvFileData.Length > 0)
+                                    @if (item.CriminalRecord)
                                     {
-                                        <a asp-action="DownloadCv" asp-route-id="@item.Id" class="btn btn-success btn-sm">عرض السيرة</a>
+                                        <span class="badge bg-danger">
+                                            نعم
+                                        </span>
                                     }
                                     else
                                     {
-                                        <span class="badge-no-cv">No CV</span>
+                                        <span class="badge bg-success">
+                                            لا
+                                        </span>
                                     }
+
                                 </td>
 
+
+                                <!-- ================================================= -->
+                                <!-- ملاحظات -->
+                                <!-- ================================================= -->
+
+                                <td style="white-space: normal; min-width: 200px;">
+
+                                    @Html.DisplayFor(modelItem => item.Notes)
+
+                                </td>
+
+
+                                <!-- ================================================= -->
+                                <!-- السيرة الذاتية -->
+                                <!-- ================================================= -->
+
                                 <td>
+
+                                    @if (item.CvFileData != null &&
+                                         item.CvFileData.Length > 0)
+                                    {
+                                        <a asp-action="DownloadCv"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-success btn-sm">
+
+                                            عرض السيرة
+
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-no-cv">
+                                            لا يوجد CV
+                                        </span>
+                                    }
+
+                                </td>
+
+
+                                <!-- ================================================= -->
+                                <!-- الإجراءات -->
+                                <!-- ================================================= -->
+
+                                <td>
+
                                     <div class="btn-group" role="group">
 
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">تعديل</a>
+                                        <!-- تعديل -->
 
-                                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-id="@item.Id">حذف</button>
+                                        <a asp-action="Edit"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-warning">
+
+                                            تعديل
+
+                                        </a>
+
+
+                                        <!-- حذف -->
+                                        @if (ViewBag.CanDelete == true)
+                                        {
+                                            <button type="button"
+                                                    class="btn btn-sm btn-danger"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#confirmDeleteModal"
+                                                    data-id="@item.Id">
+
+                                                حذف
+
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button"
+                                                    class="btn btn-sm btn-danger"
+                                                    disabled
+                                                    title="ليس لديك صلاحية الحذف">
+
+                                                حذف
+
+                                            </button>
+                                        }
+
+
                                         <!-- تصدير Excel -->
+
                                         <a asp-action="ExportToExcel"
                                            asp-route-id="@item.Id"
                                            class="btn btn-sm btn-success">
+
                                             EXPORT
+
                                         </a>
+
+
                                         <!-- طباعة -->
+
                                         <a asp-action="Print"
                                            asp-route-id="@item.Id"
                                            target="_blank"
                                            class="btn btn-sm btn-print">
+
                                             طباعة
+
                                         </a>
+
                                     </div>
+
                                 </td>
 
                             </tr>
@@ -211,43 +566,173 @@
             </div>
 
         </div>
+
     </div>
 
+
+    <!-- ===================================================== -->
     <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true" dir="rtl" lang="ar">
+    <!-- ===================================================== -->
+
+    <div class="modal fade"
+         id="confirmDeleteModal"
+         tabindex="-1"
+         aria-labelledby="confirmDeleteModalLabel"
+         aria-hidden="true"
+         dir="rtl"
+         lang="ar">
+
         <div class="modal-dialog">
+
             <div class="modal-content text-end">
+
                 <div class="modal-header">
-                    <h5 class="modal-title" id="confirmDeleteModalLabel">تأكيد الحذف</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+
+                    <h5 class="modal-title"
+                        id="confirmDeleteModalLabel">
+
+                        تأكيد الحذف
+
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="إغلاق">
+                    </button>
+
                 </div>
+
+
                 <div class="modal-body">
+
                     هل أنت متأكد من حذف هذا الطلب؟
+
                 </div>
+
+
                 <div class="modal-footer">
-                    <form asp-action="Delete" method="post" id="deleteForm" class="m-0 p-0">
+
+                    <form asp-action="Delete"
+                          method="post"
+                          id="deleteForm"
+                          class="m-0 p-0">
+
                         @Html.AntiForgeryToken()
-                        <input type="hidden" name="id" id="deleteId" value="" />
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                        <button type="submit" class="btn btn-danger">حذف</button>
+
+                        <input type="hidden"
+                               name="id"
+                               id="deleteId"
+                               value="" />
+
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+
+                            إلغاء
+
+                        </button>
+
+                        <button type="submit"
+                                class="btn btn-danger">
+
+                            حذف
+
+                        </button>
+
                     </form>
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
+
+
+    <!-- ===================================================== -->
+    <!-- JavaScript -->
+    <!-- ===================================================== -->
 
     <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                var confirmDeleteModal = document.getElementById('confirmDeleteModal');
-                if (confirmDeleteModal) {
-                    confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
-                        var button = event.relatedTarget;
-                        var id = button.getAttribute('data-id');
-                        var input = document.getElementById('deleteId');
-                        if (input) input.value = id;
-                    });
+
+            // =====================================================
+            // عرض المزيد / عرض أقل
+            // للمؤهلات والخبرات
+            // =====================================================
+
+            function toggleContent(id, button) {
+
+                var element = document.getElementById(id);
+
+                if (!element) {
+                    return;
                 }
+
+
+                if (element.style.display === "none" ||
+                    element.style.display === "") {
+
+                    element.style.display = "block";
+
+                    button.innerText = "عرض أقل";
+
+                }
+                else {
+
+                    element.style.display = "none";
+
+                    button.innerText = "عرض المزيد";
+
+                }
+
+            }
+
+
+            // =====================================================
+            // Delete Modal
+            // =====================================================
+
+            document.addEventListener('DOMContentLoaded', function() {
+
+                var confirmDeleteModal =
+                    document.getElementById('confirmDeleteModal');
+
+
+                if (confirmDeleteModal) {
+
+                    confirmDeleteModal.addEventListener(
+                        'show.bs.modal',
+                        function(event) {
+
+                            var button =
+                                event.relatedTarget;
+
+                            if (!button) {
+                                return;
+                            }
+
+
+                            var id =
+                                button.getAttribute('data-id');
+
+
+                            var input =
+                                document.getElementById('deleteId');
+
+
+                            if (input) {
+                                input.value = id;
+                            }
+
+                        }
+                    );
+
+                }
+
             });
+
     </script>
 
 </div>

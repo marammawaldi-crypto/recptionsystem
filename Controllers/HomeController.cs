@@ -1,4 +1,4 @@
-
+using ReceptionSystem.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReceptionSystem.Models;
@@ -13,6 +13,7 @@ namespace ReceptionSystem.Controllers
         // GET: HOME
         // =====================================================
 
+        [Permission("Home.View")]
         public IActionResult Index()
         {
             return View();

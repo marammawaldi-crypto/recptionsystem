@@ -1,0 +1,101 @@
+﻿@model ReceptionSystem.Models.EditUserViewModel
+
+@{
+    ViewData["Title"] = "تعديل المستخدم";
+}
+
+<div class="container mt-4" dir="rtl">
+
+    <h2 class="mb-4">تعديل المستخدم</h2>
+
+    <form asp-action="Edit" method="post">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="Id" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3">
+        </div>
+
+        <!-- Username -->
+        <div class="mb-3">
+            <label asp-for="UserName" class="form-label">
+                اسم المستخدم
+            </label>
+
+            <input asp-for="UserName"
+                   class="form-control" />
+
+            <span asp-validation-for="UserName"
+                  class="text-danger">
+            </span>
+        </div>
+
+        <!-- Email -->
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label">
+                البريد الإلكتروني
+            </label>
+
+            <input asp-for="Email"
+                   class="form-control" />
+
+            <span asp-validation-for="Email"
+                  class="text-danger">
+            </span>
+        </div>
+
+        <!-- Role -->
+        <div class="mb-3">
+            <label asp-for="Role" class="form-label">
+                نوع المستخدم
+            </label>
+
+            <select asp-for="Role" class="form-select">
+
+                <option value="">-- اختر نوع المستخدم --</option>
+
+                <option value="ADMIN">
+                    ADMIN
+                </option>
+
+                <option value="RECEPTIONIST">
+                    RECEPTIONIST
+                </option>
+
+                <option value="USER">
+                    USER
+                </option>
+
+            </select>
+
+            <span asp-validation-for="Role"
+                  class="text-danger">
+            </span>
+        </div>
+
+        <div class="mt-4">
+
+            <button type="submit"
+                    class="btn btn-primary">
+                حفظ التعديلات
+            </button>
+
+            <a asp-controller="Users"
+               asp-action="Index"
+               class="btn btn-secondary">
+                إلغاء
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

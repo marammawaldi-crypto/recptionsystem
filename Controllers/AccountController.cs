@@ -23,22 +23,31 @@ namespace ReceptionSystem.Controllers
         [AllowAnonymous]
         public IActionResult Login(string returnUrl = null)
         {
-            var model = new LoginViewModel { ReturnUrl = returnUrl };
+            var model = new LoginViewModel
+            {
+                ReturnUrl = returnUrl
+            };
+
             return View(model);
         }
 
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
+        public async Task<IActionResult> Login(
+            LoginViewModel model,
+            string returnUrl = null)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            var user = await _userManager.FindByNameAsync(model.UserName);
+            var user = await _userManager.FindByNameAsync(model.UserName.Trim());
             if (user == null)
             {
-                ModelState.AddModelError(string.Empty, "المستخدم غير موجود");
+                ModelState.AddModelError(
+                    string.Empty,
+                    "المستخدم غير موجود");
+
                 return View(model);
             }
 
@@ -50,25 +59,66 @@ namespace ReceptionSystem.Controllers
 
             if (result.Succeeded)
             {
-                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-                    return Redirect(returnUrl);
+                // =====================================================
+                // Get User Role
+                // =====================================================
 
-                return RedirectToAction("Index", "Home");
+                var roles = await _userManager.GetRolesAsync(user);
+
+                // =====================================================
+                // Redirect by Role
+                // =====================================================
+
+                if (roles.Contains("ADMIN"))
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+
+                if (roles.Contains("RECEPTIONIST"))
+                {
+                    return RedirectToAction("Index", "Visitors");
+                }
+
+                if (roles.Contains("USER"))
+                {
+                    return RedirectToAction("Create", "JobApplications");
+                }
+
+                // =====================================================
+                // Unknown Role
+                // =====================================================
+
+                await _signInManager.SignOutAsync();
+
+                ModelState.AddModelError(
+                    string.Empty,
+                    "لا يوجد دور محدد لهذا المستخدم.");
+
+                return View(model);
             }
 
             if (result.IsLockedOut)
             {
-                ModelState.AddModelError(string.Empty, "تم قفل الحساب");
+                ModelState.AddModelError(
+                    string.Empty,
+                    "تم قفل الحساب");
+
                 return View(model);
             }
 
             if (result.RequiresTwoFactor)
             {
-                ModelState.AddModelError(string.Empty, "يتطلب مصادقة بخطوتين");
+                ModelState.AddModelError(
+                    string.Empty,
+                    "يتطلب مصادقة بخطوتين");
+
                 return View(model);
             }
 
-            ModelState.AddModelError(string.Empty, "كلمة المرور خاطئة");
+            ModelState.AddModelError(
+                string.Empty,
+                "كلمة المرور خاطئة");
+
             return View(model);
         }
 
@@ -77,7 +127,10 @@ namespace ReceptionSystem.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Login", "Account");
+
+            return RedirectToAction(
+                "Login",
+                "Account");
         }
 
         [AllowAnonymous]

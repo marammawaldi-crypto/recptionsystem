@@ -1,25 +1,29 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ReceptionSystem.Models
 {
     public class JobApplication
     {
-        internal readonly object Graduationyear;
-
         [Key]
         public int Id { get; set; }
+
         [Required]
         [Display(Name = "تاريخ تقديم الطلب")]
         [DataType(DataType.Date)]
         public DateTime ApplicationSubmissionDate { get; set; }
+
         [Display(Name = "رقم الطلب")]
         public string ApplicationNumber { get; set; } = string.Empty;
 
         [Display(Name = "تاريخ تقديم الطلب")]
         public DateTime ApplicationDate { get; set; }
 
+
+        // =====================================================
         // Personal Information
+        // =====================================================
 
         [Required]
         [Display(Name = "الاسم الكامل")]
@@ -52,7 +56,11 @@ namespace ReceptionSystem.Models
         [Display(Name = "رقم الهاتف")]
         public string? Phone { get; set; }
 
-        // Driving license relation: foreign key to DrivingLicenseType
+
+        // =====================================================
+        // Driving License
+        // =====================================================
+
         public int? DrivingLicenseTypeId { get; set; }
 
         [ForeignKey("DrivingLicenseTypeId")]
@@ -65,7 +73,10 @@ namespace ReceptionSystem.Models
         [Display(Name = "إجازة القيادة")]
         public string? DrivingLicense { get; set; }
 
+
+        // =====================================================
         // Job Information
+        // =====================================================
 
         [Display(Name = "الوظيفة المتقدم لها")]
         public string? Position { get; set; }
@@ -89,7 +100,9 @@ namespace ReceptionSystem.Models
         public string? Notes { get; set; }
 
 
+        // =====================================================
         // CV
+        // =====================================================
 
         [Display(Name = "السيرة الذاتية")]
         public byte[]? CvFileData { get; set; }
@@ -98,8 +111,12 @@ namespace ReceptionSystem.Models
 
         public string? CvContentType { get; set; }
 
-        // Optional file path when storing CVs on disk or a CDN
         public string? CvFilePath { get; set; }
+
+
+        // =====================================================
+        // Related Data
+        // =====================================================
 
         public List<Language> Languages { get; set; } = new();
 
@@ -112,3 +129,4 @@ namespace ReceptionSystem.Models
         public List<Qualification> Qualifications { get; set; } = new();
     }
 }
+
