@@ -74,8 +74,8 @@
                     <label asp-for="MaritalStatus" class="control-label">الحالة الاجتماعية</label>
                     <select asp-for="MaritalStatus" class="form-control">
                         <option value="">-- اختر --</option>
-                        <option value="متزوج/ة">متزوج/ة</option>
-                        <option value="أعزب/عزباء">أعزب/عزباء</option>
+                        <option value="متزوج" selected="@(Model.MaritalStatus == "متزوج")">متزوج</option>
+                        <option value="أعزب" selected="@(Model.MaritalStatus == "أعزب")">أعزب</option>
                     </select>
                     <span asp-validation-for="MaritalStatus" class="text-danger"></span>
                 </div>
@@ -210,6 +210,8 @@
                                     <input type="hidden" name="Qualifications[@i].Id" value="@q.Id" />
                                     <select name="Qualifications[@i].Degree" class="form-control">
                                         <option value="">-- اختر المؤهل العلمي --</option>
+                                        <option value="أُمي" selected="@(q.Degree == "أُمي")">أُمي</option>
+                                        <option value="شهادة ابتدائي" selected="@(q.Degree == "شهادة ابتدائي")">شهادة ابتدائي</option>
                                         <option value="شهادة التعليم الأساسي (إعدادية)" selected="@(q.Degree == "شهادة التعليم الأساسي (إعدادية)")">شهادة التعليم الأساسي (إعدادية)</option>
                                         <option value="شهادة الثانوية العامة" selected="@(q.Degree == "شهادة الثانوية العامة")">شهادة الثانوية العامة</option>
                                         <option value="معهد" selected="@(q.Degree == "معهد")">معهد</option>
@@ -232,7 +234,7 @@
                                 <td>
                                     <select name="Qualifications[@i].Degree" class="form-control">
                                         <option value="">-- اختر المؤهل العلمي --</option>
-                                        <option value="أُمي/ة">أُمي/ة</option>
+                                        <option value="أُمي">أُمي</option>
                                         <option value="شهادة ابتدائي">شهادة ابتدائي</option>
                                         <option value="شهادة التعليم الأساسي (إعدادية)">شهادة التعليم الأساسي (إعدادية)</option>
                                         <option value="شهادة الثانوية العامة">شهادة الثانوية العامة</option>
@@ -334,8 +336,14 @@
                                     <input name="Experiences[@i].CompanyName" class="form-control" value="@ex.CompanyName" />
                                 </td>
                                 <td><input name="Experiences[@i].JobTitle" class="form-control" value="@ex.JobTitle" /></td>
-                                value="@(ex.FromDate.HasValue ? ex.FromDate.Value.ToString("yyyy-MM-dd") : "")" />
-                                value="@(ex.ToDate.HasValue ? ex.ToDate.Value.ToString("yyyy-MM-dd") : "")" />
+                                <td>
+                                    <input name="Experiences[@i].FromDate" type="date" class="form-control"
+                                           value="@(ex.FromDate.HasValue ? ex.FromDate.Value.ToString("yyyy-MM-dd") : "")" />
+                                </td>
+                                <td>
+                                    <input name="Experiences[@i].ToDate" type="date" class="form-control"
+                                           value="@(ex.ToDate.HasValue ? ex.ToDate.Value.ToString("yyyy-MM-dd") : "")" />
+                                </td>
                                 <td><input name="Experiences[@i].LastSalary" type="text" class="form-control" value="@ex.LastSalary" /></td>
                             </tr>
                         }

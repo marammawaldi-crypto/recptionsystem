@@ -2,9 +2,19 @@
 
 @{
     ViewData["Title"] = "طلبات التوظيف";
+
+    var filterColumn = Context.Request.Query["filterColumn"].ToString();
+    var filterValue = Context.Request.Query["filterValue"].ToString();
+
+    if (string.IsNullOrEmpty(filterColumn))
+    {
+        filterColumn = "FullName";
+    }
+
+    var drivingLicenseTypes = ViewBag.DrivingLicenseTypes;
 }
 
-<div class="container-fluid mt-4" dir="rtl" lang="ar">
+<div class="container-fluid mt-4 job-applications-page" dir="rtl" lang="ar">
 
     <!-- ===================================================== -->
     <!-- Header -->
@@ -19,6 +29,294 @@
         </a>
 
     </div>
+
+
+    <!-- ===================================================== -->
+    <!-- Filter -->
+    <!-- ===================================================== -->
+
+    <form asp-action="Index"
+          method="get"
+          class="mb-3">
+
+        <div class="filter-box">
+
+            <!-- اختيار العمود -->
+            <select name="filterColumn"
+                    id="filterColumn"
+                    class="form-select filter-column">
+
+                <option value="ApplicationNumber"
+                        selected="@(filterColumn == "ApplicationNumber")">
+                    رقم الطلب
+                </option>
+
+                <option value="ApplicationDate"
+                        selected="@(filterColumn == "ApplicationDate")">
+                    تاريخ الطلب
+                </option>
+
+                <option value="FullName"
+                        selected="@(filterColumn == "FullName")">
+                    الاسم الكامل
+                </option>
+
+                <option value="Gender"
+                        selected="@(filterColumn == "Gender")">
+                    الجنس
+                </option>
+
+                <option value="Nationality"
+                        selected="@(filterColumn == "Nationality")">
+                    الجنسية
+                </option>
+
+                <option value="PlaceOfBirth"
+                        selected="@(filterColumn == "PlaceOfBirth")">
+                    مكان الولادة
+                </option>
+
+                <option value="DateOfBirth"
+                        selected="@(filterColumn == "DateOfBirth")">
+                    تاريخ الميلاد
+                </option>
+
+                <option value="NationalNumber"
+                        selected="@(filterColumn == "NationalNumber")">
+                    الرقم القومي
+                </option>
+
+                <option value="MaritalStatus"
+                        selected="@(filterColumn == "MaritalStatus")">
+                    الحالة الاجتماعية
+                </option>
+
+                <option value="Address"
+                        selected="@(filterColumn == "Address")">
+                    العنوان
+                </option>
+
+                <option value="Phone"
+                        selected="@(filterColumn == "Phone")">
+                    الهاتف
+                </option>
+
+                <option value="Email"
+                        selected="@(filterColumn == "Email")">
+                    البريد الإلكتروني
+                </option>
+
+                <option value="DrivingLicense"
+                        selected="@(filterColumn == "DrivingLicense")">
+                    رخصة القيادة
+                </option>
+
+                <option value="Position"
+                        selected="@(filterColumn == "Position")">
+                    الوظيفة المتقدم لها
+                </option>
+
+                <option value="Qualifications"
+                        selected="@(filterColumn == "Qualifications")">
+                    المؤهلات العلمية
+                </option>
+
+                <option value="Experiences"
+                        selected="@(filterColumn == "Experiences")">
+                    الخبرات العملية
+                </option>
+
+                <option value="ExpectedSalary"
+                        selected="@(filterColumn == "ExpectedSalary")">
+                    الراتب المتوقع
+                </option>
+
+                <option value="AvailableStartDate"
+                        selected="@(filterColumn == "AvailableStartDate")">
+                    تاريخ مباشرة العمل
+                </option>
+
+                <option value="CurrentlyWorking"
+                        selected="@(filterColumn == "CurrentlyWorking")">
+                    يعمل حالياً
+                </option>
+
+                <option value="HealthCondition"
+                        selected="@(filterColumn == "HealthCondition")">
+                    الحالة الصحية
+                </option>
+
+                <option value="CriminalRecord"
+                        selected="@(filterColumn == "CriminalRecord")">
+                    سوابق قضائية
+                </option>
+
+                <option value="Notes"
+                        selected="@(filterColumn == "Notes")">
+                    ملاحظات
+                </option>
+
+                <option value="Cv"
+                        selected="@(filterColumn == "Cv")">
+                    السيرة الذاتية
+                </option>
+
+            </select>
+
+
+            <!-- ================================================= -->
+            <!-- الفلتر النصي -->
+            <!-- ================================================= -->
+
+            <input type="text"
+                   name="filterValue"
+                   id="filterValue"
+                   value="@(filterColumn != "Gender" &&
+                                        filterColumn != "MaritalStatus" &&
+                                        filterColumn != "DrivingLicense" &&
+                                        filterColumn != "CriminalRecord"
+                                        ? filterValue
+                                        : "")"
+                   class="form-control filter-value" />
+
+
+            <!-- ================================================= -->
+            <!-- الجنس -->
+            <!-- ================================================= -->
+
+            <select id="filterGender"
+                    class="form-select filter-value special-filter"
+                    data-filter-value="@filterValue">
+
+                <option value="">
+                    اختر الجنس
+                </option>
+
+                <option value="ذكر"
+                        selected="@(filterValue == "ذكر")">
+                    ذكر
+                </option>
+
+                <option value="أنثى"
+                        selected="@(filterValue == "أنثى")">
+                    أنثى
+                </option>
+
+            </select>
+
+
+            <!-- ================================================= -->
+            <!-- الحالة الاجتماعية -->
+            <!-- ================================================= -->
+
+            <select id="filterMaritalStatus"
+                    class="form-select filter-value special-filter"
+                    data-filter-value="@filterValue">
+
+                <option value="">
+                    اختر الحالة الاجتماعية
+                </option>
+
+                <option value="أعزب"
+                        selected="@(filterValue == "أعزب")">
+                    أعزب
+                </option>
+
+                <option value="متزوج"
+                        selected="@(filterValue == "متزوج")">
+                    متزوج
+                </option>
+
+                <option value="مطلق"
+                        selected="@(filterValue == "مطلق")">
+                    مطلق
+                </option>
+
+                <option value="أرمل"
+                        selected="@(filterValue == "أرمل")">
+                    أرمل
+                </option>
+
+            </select>
+
+
+            <!-- ================================================= -->
+            <!-- رخصة القيادة -->
+            <!-- ================================================= -->
+
+            <select id="filterDrivingLicense"
+                    class="form-select filter-value special-filter"
+                    data-filter-value="@filterValue">
+
+                <option value="">
+                    اختر رخصة القيادة
+                </option>
+
+                @if (drivingLicenseTypes != null)
+                {
+                    foreach (var type in drivingLicenseTypes)
+                    {
+                        <option value="@type.Category"
+                                selected="@(filterValue == type.Category)">
+                            @type.Category
+                        </option>
+                    }
+                }
+
+            </select>
+
+
+            <!-- ================================================= -->
+            <!-- السوابق القضائية -->
+            <!-- ================================================= -->
+
+            <select id="filterCriminalRecord"
+                    class="form-select filter-value special-filter"
+                    data-filter-value="@filterValue">
+
+                <option value="">
+                    اختر
+                </option>
+
+                <option value="نعم"
+                        selected="@(filterValue == "نعم")">
+                    نعم
+                </option>
+
+                <option value="لا"
+                        selected="@(filterValue == "لا")">
+                    لا
+                </option>
+
+            </select>
+
+
+            <!-- ================================================= -->
+            <!-- تطبيق -->
+            <!-- ================================================= -->
+
+            <button type="submit"
+                    class="btn btn-primary filter-button">
+
+                تطبيق الفلتر
+
+            </button>
+
+
+            <!-- ================================================= -->
+            <!-- مسح -->
+            <!-- ================================================= -->
+
+            <a asp-action="Index"
+               class="btn btn-secondary clear-filter-button">
+
+                مسح الفلتر
+
+            </a>
+
+        </div>
+
+    </form>
 
 
     <!-- ===================================================== -->
@@ -52,10 +350,8 @@
                             <th>رخصة القيادة</th>
                             <th>الوظيفة المتقدم لها</th>
 
-                            <!-- المؤهلات -->
                             <th>المؤهلات العلمية</th>
 
-                            <!-- الخبرات -->
                             <th>الخبرات العملية</th>
 
                             <th>الراتب المتوقع</th>
@@ -78,147 +374,120 @@
                         {
                             <tr>
 
-                                <!-- ================================================= -->
                                 <!-- رقم الطلب -->
-                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.ApplicationNumber)
                                 </td>
 
 
-                                <!-- ================================================= -->
                                 <!-- تاريخ الطلب -->
-                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.ApplicationDate)
                                 </td>
 
 
-                                <!-- ================================================= -->
                                 <!-- الاسم -->
-                                <!-- ================================================= -->
 
                                 <td>
+
                                     <strong>
                                         @Html.DisplayFor(modelItem => item.FullName)
                                     </strong>
+
                                 </td>
 
 
-                                <!-- ================================================= -->
                                 <!-- الجنس -->
-                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Gender)
                                 </td>
 
 
-                                <!-- ================================================= -->
                                 <!-- الجنسية -->
-                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Nationality)
                                 </td>
 
 
-                                <!-- ================================================= -->
                                 <!-- مكان الولادة -->
-                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.PlaceOfBirth)
                                 </td>
 
 
-                                <!-- ================================================= -->
                                 <!-- تاريخ الميلاد -->
-                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.DateOfBirth)
                                 </td>
 
 
-                                <!-- ================================================= -->
                                 <!-- الرقم الوطني -->
-                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.NationalNumber)
                                 </td>
 
 
-                                <!-- ================================================= -->
                                 <!-- الحالة الاجتماعية -->
-                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.MaritalStatus)
                                 </td>
 
 
-                                <!-- ================================================= -->
                                 <!-- العنوان -->
-                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Address)
                                 </td>
 
 
-                                <!-- ================================================= -->
                                 <!-- الهاتف -->
-                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Phone)
                                 </td>
 
 
-                                <!-- ================================================= -->
                                 <!-- البريد الإلكتروني -->
-                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Email)
                                 </td>
 
 
-                                <!-- ================================================= -->
                                 <!-- رخصة القيادة -->
-                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.DrivingLicense)
                                 </td>
 
 
-                                <!-- ================================================= -->
                                 <!-- الوظيفة -->
-                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Position)
                                 </td>
 
 
-                                <!-- ================================================= -->
                                 <!-- المؤهلات العلمية -->
-                                <!-- ================================================= -->
 
                                 <td style="min-width: 180px; white-space: normal;">
 
-                                    @if (item.Qualifications != null && item.Qualifications.Any())
+                                    @if (item.Qualifications != null &&
+                                         item.Qualifications.Any())
                                     {
-                                        var qualifications = item.Qualifications.ToList();
+                                        var qualifications =
+                                            item.Qualifications.ToList();
 
-                                        var qualificationId = $"qualifications-{item.Id}";
-
-                                        <!-- جميع المؤهلات مخفية في البداية -->
+                                        var qualificationId =
+                                            $"qualifications-{item.Id}";
 
                                         <div id="@qualificationId"
                                              class="more-content"
@@ -265,7 +534,6 @@
 
                                         </div>
 
-                                        <!-- زر عرض المزيد -->
 
                                         <button type="button"
                                                 class="btn btn-sm btn-outline-primary"
@@ -284,19 +552,19 @@
 
                                 </td>
 
-                                <!-- ================================================= -->
+
                                 <!-- الخبرات العملية -->
-                                <!-- ================================================= -->
 
                                 <td style="min-width: 180px; white-space: normal;">
 
-                                    @if (item.Experiences != null && item.Experiences.Any())
+                                    @if (item.Experiences != null &&
+                                         item.Experiences.Any())
                                     {
-                                        var experiences = item.Experiences.ToList();
+                                        var experiences =
+                                            item.Experiences.ToList();
 
-                                        var experienceId = $"experiences-{item.Id}";
-
-                                        <!-- جميع الخبرات مخفية في البداية -->
+                                        var experienceId =
+                                            $"experiences-{item.Id}";
 
                                         <div id="@experienceId"
                                              class="more-content"
@@ -357,7 +625,6 @@
 
                                         </div>
 
-                                        <!-- زر عرض المزيد -->
 
                                         <button type="button"
                                                 class="btn btn-sm btn-outline-primary"
@@ -376,27 +643,22 @@
 
                                 </td>
 
-                                <!-- ================================================= -->
+
                                 <!-- الراتب المتوقع -->
-                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.ExpectedSalary)
                                 </td>
 
 
-                                <!-- ================================================= -->
                                 <!-- تاريخ مباشرة العمل -->
-                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.AvailableStartDate)
                                 </td>
 
 
-                                <!-- ================================================= -->
                                 <!-- يعمل حالياً -->
-                                <!-- ================================================= -->
 
                                 <td class="text-center">
 
@@ -416,18 +678,14 @@
                                 </td>
 
 
-                                <!-- ================================================= -->
                                 <!-- الحالة الصحية -->
-                                <!-- ================================================= -->
 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.HealthCondition)
                                 </td>
 
 
-                                <!-- ================================================= -->
                                 <!-- سوابق قضائية -->
-                                <!-- ================================================= -->
 
                                 <td>
 
@@ -447,9 +705,7 @@
                                 </td>
 
 
-                                <!-- ================================================= -->
                                 <!-- ملاحظات -->
-                                <!-- ================================================= -->
 
                                 <td style="white-space: normal; min-width: 200px;">
 
@@ -458,9 +714,7 @@
                                 </td>
 
 
-                                <!-- ================================================= -->
                                 <!-- السيرة الذاتية -->
-                                <!-- ================================================= -->
 
                                 <td>
 
@@ -485,15 +739,11 @@
                                 </td>
 
 
-                                <!-- ================================================= -->
                                 <!-- الإجراءات -->
-                                <!-- ================================================= -->
 
                                 <td>
 
                                     <div class="btn-group" role="group">
-
-                                        <!-- تعديل -->
 
                                         <a asp-action="Edit"
                                            asp-route-id="@item.Id"
@@ -504,7 +754,6 @@
                                         </a>
 
 
-                                        <!-- حذف -->
                                         @if (ViewBag.CanDelete == true)
                                         {
                                             <button type="button"
@@ -530,8 +779,6 @@
                                         }
 
 
-                                        <!-- تصدير Excel -->
-
                                         <a asp-action="ExportToExcel"
                                            asp-route-id="@item.Id"
                                            class="btn btn-sm btn-success">
@@ -540,8 +787,6 @@
 
                                         </a>
 
-
-                                        <!-- طباعة -->
 
                                         <a asp-action="Print"
                                            asp-route-id="@item.Id"
@@ -652,27 +897,289 @@
 
 
     <!-- ===================================================== -->
+    <!-- CSS -->
+    <!-- ===================================================== -->
+
+    <style>
+
+            .job-applications-page .filter-box {
+                display: flex;
+                width: 100%;
+                border: 1px solid #ced4da;
+                border-radius: 6px;
+                overflow: hidden;
+                background-color: #fff;
+            }
+
+
+            .job-applications-page .filter-column {
+                width: 240px;
+                min-width: 240px;
+                border: 0;
+                border-left: 1px solid #ced4da;
+                border-radius: 0;
+                background-color: #f8f9fa;
+                font-weight: 500;
+            }
+
+
+            .job-applications-page .filter-value {
+                flex: 1;
+                border: 0;
+                border-radius: 0;
+                box-shadow: none;
+                min-width: 150px;
+            }
+
+
+            .job-applications-page .filter-button {
+                border-radius: 0;
+                white-space: nowrap;
+            }
+
+
+            .job-applications-page .clear-filter-button {
+                border-radius: 0;
+                white-space: nowrap;
+            }
+
+
+            .job-applications-page .filter-column:focus,
+            .job-applications-page .filter-value:focus {
+                box-shadow: none;
+            }
+
+
+            /* =====================================================
+                       Mobile
+                       ===================================================== */
+
+            @@media (max-width: 768px) {
+
+                .job-applications-page .filter-box {
+                    flex-direction: column;
+                }
+
+
+                .job-applications-page .filter-column {
+                    width: 100%;
+                    min-width: 100%;
+                    border-left: 0;
+                    border-bottom: 1px solid #ced4da;
+                }
+
+
+                .job-applications-page .filter-value {
+                    width: 100%;
+                    min-width: 100%;
+                    border-bottom: 1px solid #ced4da;
+                }
+
+
+                .job-applications-page .filter-button,
+                .job-applications-page .clear-filter-button {
+                    width: 100%;
+                    border-radius: 0;
+                }
+            }
+
+    </style>
+
+
+    <!-- ===================================================== -->
     <!-- JavaScript -->
     <!-- ===================================================== -->
 
     <script>
 
+            document.addEventListener("DOMContentLoaded", function() {
+
+                var filterColumn =
+                    document.getElementById("filterColumn");
+
+                var textInput =
+                    document.getElementById("filterValue");
+
+                var genderSelect =
+                    document.getElementById("filterGender");
+
+                var maritalStatusSelect =
+                    document.getElementById("filterMaritalStatus");
+
+                var drivingLicenseSelect =
+                    document.getElementById("filterDrivingLicense");
+
+                var criminalRecordSelect =
+                    document.getElementById("filterCriminalRecord");
+
+
+                function hideAllSpecialFilters() {
+
+                    genderSelect.style.display = "none";
+                    maritalStatusSelect.style.display = "none";
+                    drivingLicenseSelect.style.display = "none";
+                    criminalRecordSelect.style.display = "none";
+
+                    /*
+                     * حتى لا يتم إرسال أكثر من filterValue
+                     * إلى Controller
+                     */
+
+                    genderSelect.removeAttribute("name");
+                    maritalStatusSelect.removeAttribute("name");
+                    drivingLicenseSelect.removeAttribute("name");
+                    criminalRecordSelect.removeAttribute("name");
+
+                    textInput.setAttribute("name", "filterValue");
+
+                }
+
+
+                function updateFilterInput() {
+
+                    var column =
+                        filterColumn.value;
+
+
+                    hideAllSpecialFilters();
+
+
+                    // =================================================
+                    // الجنس
+                    // =================================================
+
+                    if (column === "Gender") {
+
+                        textInput.removeAttribute("name");
+
+                        genderSelect.style.display = "block";
+
+                        genderSelect.setAttribute(
+                            "name",
+                            "filterValue"
+                        );
+
+                    }
+
+
+                    // =================================================
+                    // الحالة الاجتماعية
+                    // =================================================
+
+                    else if (column === "MaritalStatus") {
+
+                        textInput.removeAttribute("name");
+
+                        maritalStatusSelect.style.display = "block";
+
+                        maritalStatusSelect.setAttribute(
+                            "name",
+                            "filterValue"
+                        );
+
+                    }
+
+
+                    // =================================================
+                    // رخصة القيادة
+                    // =================================================
+
+                    else if (column === "DrivingLicense") {
+
+                        textInput.removeAttribute("name");
+
+                        drivingLicenseSelect.style.display = "block";
+
+                        drivingLicenseSelect.setAttribute(
+                            "name",
+                            "filterValue"
+                        );
+
+                    }
+
+
+                    // =================================================
+                    // السوابق القضائية
+                    // =================================================
+
+                    else if (column === "CriminalRecord") {
+
+                        textInput.removeAttribute("name");
+
+                        criminalRecordSelect.style.display = "block";
+
+                        criminalRecordSelect.setAttribute(
+                            "name",
+                            "filterValue"
+                        );
+
+                    }
+
+
+                    // =================================================
+                    // التاريخ
+                    // =================================================
+
+                    else if (
+                        column === "ApplicationDate" ||
+                        column === "DateOfBirth" ||
+                        column === "AvailableStartDate"
+                    ) {
+
+                        textInput.type = "date";
+
+                    }
+
+
+                    // =================================================
+                    // باقي الحقول
+                    // =================================================
+
+                    else {
+
+                        textInput.type = "text";
+
+                    }
+
+                }
+
+
+                if (filterColumn) {
+
+                    filterColumn.addEventListener(
+                        "change",
+                        updateFilterInput
+                    );
+
+                }
+
+
+                updateFilterInput();
+
+            });
+
+
             // =====================================================
             // عرض المزيد / عرض أقل
-            // للمؤهلات والخبرات
             // =====================================================
 
             function toggleContent(id, button) {
 
-                var element = document.getElementById(id);
+                var element =
+                    document.getElementById(id);
+
 
                 if (!element) {
+
                     return;
+
                 }
 
 
-                if (element.style.display === "none" ||
-                    element.style.display === "") {
+                if (
+                    element.style.display === "none" ||
+                    element.style.display === ""
+                ) {
 
                     element.style.display = "block";
 
@@ -694,44 +1201,58 @@
             // Delete Modal
             // =====================================================
 
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener(
+                "DOMContentLoaded",
+                function() {
 
-                var confirmDeleteModal =
-                    document.getElementById('confirmDeleteModal');
+                    var confirmDeleteModal =
+                        document.getElementById(
+                            "confirmDeleteModal"
+                        );
 
 
-                if (confirmDeleteModal) {
+                    if (confirmDeleteModal) {
 
-                    confirmDeleteModal.addEventListener(
-                        'show.bs.modal',
-                        function(event) {
+                        confirmDeleteModal.addEventListener(
+                            "show.bs.modal",
+                            function(event) {
 
-                            var button =
-                                event.relatedTarget;
+                                var button =
+                                    event.relatedTarget;
 
-                            if (!button) {
-                                return;
+
+                                if (!button) {
+
+                                    return;
+
+                                }
+
+
+                                var id =
+                                    button.getAttribute(
+                                        "data-id"
+                                    );
+
+
+                                var input =
+                                    document.getElementById(
+                                        "deleteId"
+                                    );
+
+
+                                if (input) {
+
+                                    input.value = id;
+
+                                }
+
                             }
+                        );
 
-
-                            var id =
-                                button.getAttribute('data-id');
-
-
-                            var input =
-                                document.getElementById('deleteId');
-
-
-                            if (input) {
-                                input.value = id;
-                            }
-
-                        }
-                    );
+                    }
 
                 }
-
-            });
+            );
 
     </script>
 

@@ -1,39 +1,253 @@
+
 @model IEnumerable<ReceptionSystem.Models.Visitor>
 
 @{
     ViewData["Title"] = "الزوار";
+
+    var filterColumn = Context.Request.Query["filterColumn"].ToString();
+    var filterValue = Context.Request.Query["filterValue"].ToString();
+
+    // إذا لم يكن هناك فلتر محدد، يكون اسم الزائر هو الاختيار الافتراضي
+    if (string.IsNullOrEmpty(filterColumn))
+    {
+        filterColumn = "VisitorName";
+    }
 }
 
 <div class="container-fluid mt-4 visitors-page" dir="rtl" lang="ar">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
+
         <h1>الزوار</h1>
 
         <a asp-action="Create" class="btn btn-primary">
             + إضافة زائر
         </a>
+
     </div>
 
+
     <div class="card shadow-sm">
+
         <div class="card-body">
 
             <div class="table-responsive dama-table-scroll">
 
+
+                <!-- =====================================================
+                     Box الفلترة
+                     بدون عنوان
+                     ===================================================== -->
+
+                <div class="mb-3">
+
+                    <form method="get" asp-action="Index">
+
+                        <div class="row g-3 align-items-center">
+
+                            <!-- =================================================
+                                 بوكس الفلترة الموحد
+                                 ================================================= -->
+
+                            <div class="col-md-7">
+
+                                <div class="filter-box">
+
+                                    <!-- =================================================
+                                         اختيار العمود
+                                         ================================================= -->
+
+                                    <select name="filterColumn"
+                                            id="filterColumn"
+                                            class="form-select filter-column">
+
+
+                                        @if (filterColumn == "VisitorName")
+                                        {
+                                            <option value="VisitorName" selected>
+                                                اسم الزائر
+                                            </option>
+                                        }
+                                        else
+                                        {
+                                            <option value="VisitorName">
+                                                اسم الزائر
+                                            </option>
+                                        }
+
+
+                                        @if (filterColumn == "VisitDate")
+                                        {
+                                            <option value="VisitDate" selected>
+                                                تاريخ الزيارة
+                                            </option>
+                                        }
+                                        else
+                                        {
+                                            <option value="VisitDate">
+                                                تاريخ الزيارة
+                                            </option>
+                                        }
+
+
+                                        @if (filterColumn == "CheckIn")
+                                        {
+                                            <option value="CheckIn" selected>
+                                                وقت الدخول
+                                            </option>
+                                        }
+                                        else
+                                        {
+                                            <option value="CheckIn">
+                                                وقت الدخول
+                                            </option>
+                                        }
+
+
+                                        @if (filterColumn == "CheckOut")
+                                        {
+                                            <option value="CheckOut" selected>
+                                                وقت الخروج
+                                            </option>
+                                        }
+                                        else
+                                        {
+                                            <option value="CheckOut">
+                                                وقت الخروج
+                                            </option>
+                                        }
+
+
+                                        @if (filterColumn == "Destination")
+                                        {
+                                            <option value="Destination" selected>
+                                                الوجهة
+                                            </option>
+                                        }
+                                        else
+                                        {
+                                            <option value="Destination">
+                                                الوجهة
+                                            </option>
+                                        }
+
+
+                                        @if (filterColumn == "Phone")
+                                        {
+                                            <option value="Phone" selected>
+                                                رقم الهاتف
+                                            </option>
+                                        }
+                                        else
+                                        {
+                                            <option value="Phone">
+                                                رقم الهاتف
+                                            </option>
+                                        }
+
+
+                                        @if (filterColumn == "Purpose")
+                                        {
+                                            <option value="Purpose" selected>
+                                                الغرض
+                                            </option>
+                                        }
+                                        else
+                                        {
+                                            <option value="Purpose">
+                                                الغرض
+                                            </option>
+                                        }
+
+
+                                        @if (filterColumn == "Notes")
+                                        {
+                                            <option value="Notes" selected>
+                                                الملاحظات
+                                            </option>
+                                        }
+                                        else
+                                        {
+                                            <option value="Notes">
+                                                الملاحظات
+                                            </option>
+                                        }
+
+                                    </select>
+
+
+                                    <!-- =================================================
+                                         قيمة الفلترة
+                                         ================================================= -->
+
+                                    <input type="text"
+                                           name="filterValue"
+                                           id="filterValue"
+                                           value="@filterValue"
+                                           class="form-control filter-value" />
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 الأزرار
+                                 ================================================= -->
+
+                            <div class="col-md-auto">
+
+                                <button type="submit"
+                                        class="btn btn-primary">
+                                    تطبيق الفلتر
+                                </button>
+
+                                <a asp-action="Index"
+                                   class="btn btn-secondary">
+                                    مسح الفلتر
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+                <!-- =====================================================
+                     جدول الزوار
+                     ===================================================== -->
+
                 <table class="table table-bordered table-striped table-hover align-middle text-nowrap visitors-table">
 
                     <thead class="dama-thead-sticky">
+
                         <tr>
+
                             <th>اسم الزائر</th>
+
                             <th>تاريخ الزيارة</th>
+
                             <th>وقت الدخول</th>
+
                             <th>وقت الخروج</th>
+
                             <th>الوجهة</th>
+
                             <th>رقم الهاتف</th>
+
                             <th>الغرض</th>
+
                             <th>ملاحظات</th>
+
                             <th>الإجراءات</th>
+
                         </tr>
+
                     </thead>
+
 
                     <tbody>
 
@@ -43,15 +257,28 @@
                             {
                                 <tr>
 
-                                    <td>@item.VisitorName</td>
+                                    <!-- اسم الزائر -->
+
+                                    <td>
+                                        @item.VisitorName
+                                    </td>
+
+
+                                    <!-- تاريخ الزيارة -->
 
                                     <td>
                                         @item.VisitDate.ToShortDateString()
                                     </td>
 
+
+                                    <!-- وقت الدخول -->
+
                                     <td>
                                         @item.CheckIn.ToString(@"hh\:mm")
                                     </td>
+
+
+                                    <!-- وقت الخروج -->
 
                                     <td>
                                         @(item.CheckOut.HasValue
@@ -59,29 +286,56 @@
                                             : "-")
                                     </td>
 
-                                    <td>@item.Destination</td>
 
-                                    <td>@item.Phone</td>
+                                    <!-- الوجهة -->
 
-                                    <td>@item.Purpose</td>
+                                    <td>
+                                        @item.Destination
+                                    </td>
 
-                                    <td>@item.Notes</td>
+
+                                    <!-- رقم الهاتف -->
+
+                                    <td>
+                                        @item.Phone
+                                    </td>
+
+
+                                    <!-- الغرض -->
+
+                                    <td>
+                                        @item.Purpose
+                                    </td>
+
+
+                                    <!-- الملاحظات -->
+
+                                    <td>
+                                        @item.Notes
+                                    </td>
+
+
+                                    <!-- الإجراءات -->
 
                                     <td class="actions-column">
 
                                         <!-- تعديل -->
+
                                         <a asp-action="Edit"
                                            asp-route-id="@item.Id"
                                            class="btn btn-sm btn-warning">
                                             تعديل
                                         </a>
 
+
                                         <!-- التفاصيل -->
+
                                         <a asp-action="Details"
                                            asp-route-id="@item.Id"
                                            class="btn btn-sm btn-details">
                                             التفاصيل
                                         </a>
+
 
                                         <!-- الحذف -->
                                         @if (ViewBag.CanDelete == true)
@@ -110,9 +364,14 @@
                         else
                         {
                             <tr>
-                                <td colspan="9" class="text-center">
+
+                                <td colspan="9"
+                                    class="text-center">
+
                                     لا يوجد زوار.
+
                                 </td>
+
                             </tr>
                         }
 
@@ -123,21 +382,33 @@
             </div>
 
         </div>
+
     </div>
 
 </div>
 
+
+<!-- =====================================================
+     CSS
+     ===================================================== -->
+
 <style>
-    /* RTL خاص بقسم Visitors فقط */
+
+    /* =====================================================
+           RTL خاص بقسم Visitors فقط
+           ===================================================== */
+
     .visitors-page {
         direction: rtl;
         text-align: right;
     }
 
+
         .visitors-page table {
             direction: rtl;
             width: 100%;
         }
+
 
         .visitors-page th,
         .visitors-page td {
@@ -145,13 +416,187 @@
             vertical-align: middle;
         }
 
+
         .visitors-page .actions-column {
             white-space: nowrap;
             text-align: center;
         }
 
+
         .visitors-page .btn {
             margin-left: 4px;
             margin-right: 0;
         }
+
+
+        /* =====================================================
+           بوكس الفلترة الموحد
+           ===================================================== */
+
+        .visitors-page .filter-box {
+            display: flex;
+            width: 100%;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+
+
+        /* =====================================================
+           اختيار العمود
+           ===================================================== */
+
+        .visitors-page .filter-column {
+            width: 220px;
+            min-width: 220px;
+            border: 0;
+            border-left: 1px solid #ced4da;
+            border-radius: 0;
+            background-color: #f8f9fa;
+            font-weight: 500;
+        }
+
+
+        /* =====================================================
+           قيمة الفلترة
+           ===================================================== */
+
+        .visitors-page .filter-value {
+            flex: 1;
+            border: 0;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+
+            /* =====================================================
+           إزالة الإطار المكرر عند التركيز
+           ===================================================== */
+
+            .visitors-page .filter-column:focus,
+            .visitors-page .filter-value:focus {
+                box-shadow: none;
+            }
+
+
+    /* =====================================================
+           الشاشات الصغيرة
+           ===================================================== */
+
+    @@media (max-width: 768px) {
+
+        .visitors-page .filter-box {
+            flex-direction: column;
+        }
+
+
+        .visitors-page .filter-column {
+            width: 100%;
+            min-width: 100%;
+            border-left: 0;
+            border-bottom: 1px solid #ced4da;
+        }
+    }
+
 </style>
+
+
+<!-- =====================================================
+     JavaScript
+     ===================================================== -->
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function() {
+
+        const filterColumn =
+            document.getElementById("filterColumn");
+
+        const filterValue =
+            document.getElementById("filterValue");
+
+
+        // =====================================================
+        // تغيير نوع حقل القيمة حسب العمود
+        // =====================================================
+
+        function updateFilterInput() {
+
+            const selectedColumn =
+                filterColumn.value;
+
+
+            // =================================================
+            // الوضع الافتراضي
+            // =================================================
+
+            filterValue.type = "text";
+
+
+            // =================================================
+            // تاريخ الزيارة
+            // =================================================
+
+            if (selectedColumn === "VisitDate") {
+
+                filterValue.type = "date";
+
+            }
+
+
+            // =================================================
+            // وقت الدخول
+            // =================================================
+
+            else if (selectedColumn === "CheckIn") {
+
+                filterValue.type = "time";
+
+            }
+
+
+            // =================================================
+            // وقت الخروج
+            // =================================================
+
+            else if (selectedColumn === "CheckOut") {
+
+                filterValue.type = "time";
+
+            }
+
+
+            // =================================================
+            // باقي الحقول
+            // =================================================
+
+            else {
+
+                filterValue.type = "text";
+
+            }
+
+        }
+
+
+        // =====================================================
+        // عند تغيير العمود
+        // =====================================================
+
+        filterColumn.addEventListener(
+            "change",
+            updateFilterInput
+        );
+
+
+        // =====================================================
+        // تشغيل عند فتح الصفحة
+        // =====================================================
+
+        updateFilterInput();
+
+    });
+
+</script>
+

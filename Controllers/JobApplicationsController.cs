@@ -1,6 +1,6 @@
+
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authorization;
-using ReceptionSystem.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +11,6 @@ using ReceptionSystem.Services;
 using System;
 using System.IO;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ReceptionSystem.Controllers
@@ -26,60 +25,442 @@ namespace ReceptionSystem.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _env;
         private readonly JobApplicationNumberGenerator _numberGenerator;
-        private readonly PermissionService _permissionService;
 
         public JobApplicationsController(
             ApplicationDbContext context,
             IWebHostEnvironment env,
-            JobApplicationNumberGenerator numberGenerator,
-            PermissionService permissionService)
+            JobApplicationNumberGenerator numberGenerator)
         {
             _context = context;
             _env = env;
             _numberGenerator = numberGenerator;
-            _permissionService = permissionService;
         }
 
         // =====================================================
         // GET: /JobApplications
         // =====================================================
 
-        [Permission("JobApplications.View")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+            string? filterColumn,
+            string? filterValue)
         {
-            var applications =
-                await _context.JobApplications
-                    .Include(j => j.Qualifications)
-                    .Include(j => j.Experiences)
-                    .Include(j => j.Courses)
-                    .Include(j => j.Languages)
-                    .Include(j => j.ComputerSkills)
-                    .ToListAsync();
+            var query = _context.JobApplications
+                .Include(x => x.Qualifications)
+                .Include(x => x.Experiences)
+                .AsQueryable();
 
-            var userId =
-                User.FindFirstValue(
-                    ClaimTypes.NameIdentifier);
+            // =================================================
+            // FILTER
+            // =================================================
 
-            var canDelete = false;
-
-            if (!string.IsNullOrEmpty(userId))
+            if (!string.IsNullOrWhiteSpace(filterColumn) &&
+                !string.IsNullOrWhiteSpace(filterValue))
             {
-                canDelete =
-                    await _permissionService.HasPermissionAsync(
-                        userId,
-                        "JobApplications.Delete");
+                filterValue = filterValue.Trim();
+
+                switch (filterColumn)
+                {
+                    // -----------------------------------------
+                    // رقم الطلب
+                    // -----------------------------------------
+
+                    case "ApplicationNumber":
+
+                        query = query.Where(x =>
+                            x.ApplicationNumber != null &&
+                            x.ApplicationNumber.Contains(filterValue));
+
+                        break;
+
+
+                    // -----------------------------------------
+                    // تاريخ الطلب
+                    // -----------------------------------------
+
+                    case "ApplicationDate":
+
+                        if (DateTime.TryParse(filterValue, out var applicationDate))
+                        {
+                            var startDate = applicationDate.Date;
+                            var endDate = startDate.AddDays(1);
+
+                            query = query.Where(x =>
+                                x.ApplicationDate >= startDate &&
+                                x.ApplicationDate < endDate);
+                        }
+
+                        break;
+
+
+                    // -----------------------------------------
+                    // الاسم الكامل
+                    // -----------------------------------------
+
+                    case "FullName":
+
+                        query = query.Where(x =>
+                            x.FullName != null &&
+                            x.FullName.Contains(filterValue));
+
+                        break;
+
+
+                    // -----------------------------------------
+                    // الجنس
+                    // -----------------------------------------
+
+                    case "Gender":
+
+                        query = query.Where(x =>
+                            x.Gender != null &&
+                            x.Gender.Contains(filterValue));
+
+                        break;
+
+
+                    // -----------------------------------------
+                    // الجنسية
+                    // -----------------------------------------
+
+                    case "Nationality":
+
+                        query = query.Where(x =>
+                            x.Nationality != null &&
+                            x.Nationality.Contains(filterValue));
+
+                        break;
+
+
+                    // -----------------------------------------
+                    // مكان الولادة
+                    // -----------------------------------------
+
+                    case "PlaceOfBirth":
+
+                        query = query.Where(x =>
+                            x.PlaceOfBirth != null &&
+                            x.PlaceOfBirth.Contains(filterValue));
+
+                        break;
+
+
+                    // -----------------------------------------
+                    // تاريخ الميلاد
+                    // -----------------------------------------
+
+                    case "DateOfBirth":
+
+                        if (DateTime.TryParse(filterValue, out var birthDate))
+                        {
+                            var startDate = birthDate.Date;
+                            var endDate = startDate.AddDays(1);
+
+                            query = query.Where(x =>
+                                x.DateOfBirth >= startDate &&
+                                x.DateOfBirth < endDate);
+                        }
+
+                        break;
+
+
+                    // -----------------------------------------
+                    // الرقم القومي
+                    // -----------------------------------------
+
+                    case "NationalNumber":
+
+                        query = query.Where(x =>
+                            x.NationalNumber != null &&
+                            x.NationalNumber.Contains(filterValue));
+
+                        break;
+
+
+                    // -----------------------------------------
+                    // الحالة الاجتماعية
+                    // -----------------------------------------
+
+                    case "MaritalStatus":
+
+                        query = query.Where(x =>
+                            x.MaritalStatus != null &&
+                            x.MaritalStatus.Contains(filterValue));
+
+                        break;
+
+
+                    // -----------------------------------------
+                    // العنوان
+                    // -----------------------------------------
+
+                    case "Address":
+
+                        query = query.Where(x =>
+                            x.Address != null &&
+                            x.Address.Contains(filterValue));
+
+                        break;
+
+
+                    // -----------------------------------------
+                    // الهاتف
+                    // -----------------------------------------
+
+                    case "Phone":
+
+                        query = query.Where(x =>
+                            x.Phone != null &&
+                            x.Phone.Contains(filterValue));
+
+                        break;
+
+
+                    // -----------------------------------------
+                    // البريد الإلكتروني
+                    // -----------------------------------------
+
+                    case "Email":
+
+                        query = query.Where(x =>
+                            x.Email != null &&
+                            x.Email.Contains(filterValue));
+
+                        break;
+
+
+                    // -----------------------------------------
+                    // رخصة القيادة
+                    // -----------------------------------------
+
+                    case "DrivingLicense":
+
+                        query = query.Where(x =>
+                            x.DrivingLicense != null &&
+                            x.DrivingLicense.Contains(filterValue));
+
+                        break;
+
+
+                    // -----------------------------------------
+                    // الوظيفة
+                    // -----------------------------------------
+
+                    case "Position":
+
+                        query = query.Where(x =>
+                            x.Position != null &&
+                            x.Position.Contains(filterValue));
+
+                        break;
+
+
+                    // -----------------------------------------
+                    // المؤهلات العلمية
+                    // البحث ضمن الدرجة أو الاختصاص أو الجامعة
+                    // أو سنة التخرج
+                    // -----------------------------------------
+
+                    case "Qualifications":
+
+                        query = query.Where(x =>
+                            x.Qualifications.Any(q =>
+                                (q.Degree != null &&
+                                 q.Degree.Contains(filterValue))
+                                ||
+                                (q.Specialization != null &&
+                                 q.Specialization.Contains(filterValue))
+                                ||
+                                (q.University != null &&
+                                 q.University.Contains(filterValue))
+                                ||
+                                (q.GraduationYear != null &&
+                                 q.GraduationYear.Contains(filterValue))
+                            ));
+
+                        break;
+
+
+                    // -----------------------------------------
+                    // الخبرات العملية
+                    // البحث ضمن الشركة أو المسمى الوظيفي
+                    // أو الراتب أو التواريخ
+                    // -----------------------------------------
+
+                    case "Experiences":
+
+                        query = query.Where(x =>
+                            x.Experiences.Any(e =>
+                                (e.CompanyName != null &&
+                                 e.CompanyName.Contains(filterValue))
+                                ||
+                                (e.JobTitle != null &&
+                                 e.JobTitle.Contains(filterValue))
+                                ||
+                                (e.LastSalary != null &&
+                                 e.LastSalary.Contains(filterValue))
+                                ||
+                                (e.FromDate.HasValue &&
+                                 e.FromDate.Value.ToString().Contains(filterValue))
+                                ||
+                                (e.ToDate.HasValue &&
+                                 e.ToDate.Value.ToString().Contains(filterValue))
+                            ));
+
+                        break;
+
+
+                    // -----------------------------------------
+                    // الراتب المتوقع
+                    // -----------------------------------------
+
+                    case "ExpectedSalary":
+
+                        query = query.Where(x =>
+                            x.ExpectedSalary.ToString().Contains(filterValue));
+
+                        break;
+
+
+                    // -----------------------------------------
+                    // تاريخ مباشرة العمل
+                    // -----------------------------------------
+
+                    case "AvailableStartDate":
+
+                        if (DateTime.TryParse(filterValue, out var startWorkDate))
+                        {
+                            var startDate = startWorkDate.Date;
+                            var endDate = startDate.AddDays(1);
+
+                            query = query.Where(x =>
+                                x.AvailableStartDate >= startDate &&
+                                x.AvailableStartDate < endDate);
+                        }
+
+                        break;
+
+
+                    // -----------------------------------------
+                    // يعمل حالياً
+                    // -----------------------------------------
+
+                    case "CurrentlyWorking":
+
+                        if (filterValue == "نعم" ||
+                            filterValue.Equals("yes", StringComparison.OrdinalIgnoreCase) ||
+                            filterValue == "1")
+                        {
+                            query = query.Where(x => x.CurrentlyWorking);
+                        }
+                        else if (filterValue == "لا" ||
+                                 filterValue.Equals("no", StringComparison.OrdinalIgnoreCase) ||
+                                 filterValue == "0")
+                        {
+                            query = query.Where(x => !x.CurrentlyWorking);
+                        }
+
+                        break;
+
+
+                    // -----------------------------------------
+                    // الحالة الصحية
+                    // -----------------------------------------
+
+                    case "HealthCondition":
+
+                        query = query.Where(x =>
+                            x.HealthCondition != null &&
+                            x.HealthCondition.Contains(filterValue));
+
+                        break;
+
+
+                    // -----------------------------------------
+                    // سوابق قضائية
+                    // -----------------------------------------
+
+                    case "CriminalRecord":
+
+                        if (filterValue == "نعم" ||
+                            filterValue.Equals("yes", StringComparison.OrdinalIgnoreCase) ||
+                            filterValue == "1")
+                        {
+                            query = query.Where(x => x.CriminalRecord);
+                        }
+                        else if (filterValue == "لا" ||
+                                 filterValue.Equals("no", StringComparison.OrdinalIgnoreCase) ||
+                                 filterValue == "0")
+                        {
+                            query = query.Where(x => !x.CriminalRecord);
+                        }
+
+                        break;
+
+
+                    // -----------------------------------------
+                    // ملاحظات
+                    // -----------------------------------------
+
+                    case "Notes":
+
+                        query = query.Where(x =>
+                            x.Notes != null &&
+                            x.Notes.Contains(filterValue));
+
+                        break;
+
+
+                    // -----------------------------------------
+                    // السيرة الذاتية
+                    // -----------------------------------------
+
+                    case "Cv":
+
+                        if (filterValue == "موجود" ||
+                            filterValue.Equals("yes", StringComparison.OrdinalIgnoreCase) ||
+                            filterValue == "1")
+                        {
+                            query = query.Where(x =>
+                                x.CvFileData != null &&
+                                x.CvFileData.Length > 0);
+                        }
+                        else if (filterValue == "غير موجود" ||
+                                 filterValue.Equals("no", StringComparison.OrdinalIgnoreCase) ||
+                                 filterValue == "0")
+                        {
+                            query = query.Where(x =>
+                                x.CvFileData == null ||
+                                x.CvFileData.Length == 0);
+                        }
+
+                        break;
+                }
             }
 
-            ViewBag.CanDelete = canDelete;
+            // =================================================
+            // ORDER
+            // =================================================
+
+            var applications =
+                await query
+                    .OrderByDescending(x => x.Id)
+                    .ToListAsync();
+
+            // =================================================
+            // VIEW DATA
+            // =================================================
+
+            ViewBag.FilterColumn = filterColumn;
+            ViewBag.FilterValue = filterValue;
 
             return View(applications);
         }
+
 
         // =====================================================
         // GET: /JobApplications/Details/5
         // =====================================================
 
-        [Permission("JobApplications.Details")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -89,11 +470,6 @@ namespace ReceptionSystem.Controllers
 
             var jobApplication =
                 await _context.JobApplications
-                    .Include(j => j.Qualifications)
-                    .Include(j => j.Experiences)
-                    .Include(j => j.Courses)
-                    .Include(j => j.Languages)
-                    .Include(j => j.ComputerSkills)
                     .FirstOrDefaultAsync(j => j.Id == id);
 
             if (jobApplication == null)
@@ -104,11 +480,11 @@ namespace ReceptionSystem.Controllers
             return View(jobApplication);
         }
 
+
         // =====================================================
-        // GET: Create
+        // GET: /JobApplications/Create
         // =====================================================
 
-        [Permission("JobApplications.Create")]
         public async Task<IActionResult> Create()
         {
             ViewBag.DrivingLicenseTypes =
@@ -119,20 +495,20 @@ namespace ReceptionSystem.Controllers
             return View(new JobApplication());
         }
 
+
         // =====================================================
-        // POST: Create
+        // POST: /JobApplications/Create
         // =====================================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Permission("JobApplications.Create")]
         public async Task<IActionResult> Create(
             JobApplication jobApplication,
             IFormFile? CvFile)
         {
-            // =================================================
+            // -------------------------------------------------
             // Remove empty Qualifications
-            // =================================================
+            // -------------------------------------------------
 
             jobApplication.Qualifications =
                 jobApplication.Qualifications?
@@ -144,9 +520,10 @@ namespace ReceptionSystem.Controllers
                     .ToList()
                     ?? new List<Qualification>();
 
-            // =================================================
+
+            // -------------------------------------------------
             // Remove empty Courses
-            // =================================================
+            // -------------------------------------------------
 
             jobApplication.Courses =
                 jobApplication.Courses?
@@ -157,24 +534,26 @@ namespace ReceptionSystem.Controllers
                     .ToList()
                     ?? new List<Course>();
 
-            // =================================================
+
+            // -------------------------------------------------
             // Remove empty Experiences
-            // =================================================
+            // -------------------------------------------------
 
             jobApplication.Experiences =
                 jobApplication.Experiences?
                     .Where(e =>
                         !string.IsNullOrWhiteSpace(e.CompanyName)
                         || !string.IsNullOrWhiteSpace(e.JobTitle)
-                        || e.FromDate.HasValue
+                        || e.FromDate != default
                         || e.ToDate.HasValue
                         || !string.IsNullOrWhiteSpace(e.LastSalary))
                     .ToList()
                     ?? new List<Experience>();
 
-            // =================================================
+
+            // -------------------------------------------------
             // Remove empty Computer Skills
-            // =================================================
+            // -------------------------------------------------
 
             jobApplication.ComputerSkills =
                 jobApplication.ComputerSkills?
@@ -183,9 +562,10 @@ namespace ReceptionSystem.Controllers
                     .ToList()
                     ?? new List<ComputerSkill>();
 
-            // =================================================
+
+            // -------------------------------------------------
             // Remove empty Languages
-            // =================================================
+            // -------------------------------------------------
 
             jobApplication.Languages =
                 jobApplication.Languages?
@@ -196,9 +576,10 @@ namespace ReceptionSystem.Controllers
                     .ToList()
                     ?? new List<Language>();
 
-            // =================================================
-            // Remove validation errors from optional sections
-            // =================================================
+
+            // -------------------------------------------------
+            // Remove validation errors
+            // -------------------------------------------------
 
             var keysToRemove = ModelState.Keys
                 .Where(k =>
@@ -214,9 +595,10 @@ namespace ReceptionSystem.Controllers
                 ModelState.Remove(key);
             }
 
-            // =================================================
+
+            // -------------------------------------------------
             // Validate
-            // =================================================
+            // -------------------------------------------------
 
             if (!ModelState.IsValid)
             {
@@ -228,14 +610,16 @@ namespace ReceptionSystem.Controllers
                 return View(jobApplication);
             }
 
-            // =================================================
+
+            // -------------------------------------------------
             // Application Date
-            // =================================================
+            // -------------------------------------------------
 
             jobApplication.ApplicationDate = DateTime.Now;
 
+
             // =================================================
-            // Save CV
+            // SAVE CV
             // =================================================
 
             if (CvFile != null && CvFile.Length > 0)
@@ -260,7 +644,8 @@ namespace ReceptionSystem.Controllers
 
                     ModelState.AddModelError(
                         "CvFile",
-                        "Only PDF, DOC and DOCX files are allowed.");
+                        "Only PDF, DOC and DOCX files are allowed."
+                    );
 
                     return View(jobApplication);
                 }
@@ -280,24 +665,27 @@ namespace ReceptionSystem.Controllers
                     CvFile.ContentType;
             }
 
-            // =================================================
-            // Generate Application Number
-            // =================================================
+
+            // -------------------------------------------------
+            // Assign application number
+            // -------------------------------------------------
 
             jobApplication.ApplicationNumber =
                 await _numberGenerator.GenerateNextNumberAsync("HR");
 
-            // =================================================
+
+            // -------------------------------------------------
             // Save
-            // =================================================
+            // -------------------------------------------------
 
             _context.JobApplications.Add(jobApplication);
 
             await _context.SaveChangesAsync();
 
-            // =================================================
-            // Final Application Number
-            // =================================================
+
+            // -------------------------------------------------
+            // Final application number
+            // -------------------------------------------------
 
             jobApplication.ApplicationNumber =
                 $"DAMA/HR/{jobApplication.Id}";
@@ -306,22 +694,22 @@ namespace ReceptionSystem.Controllers
 
             await _context.SaveChangesAsync();
 
+
             TempData["SuccessMessage"] =
                 "Job application saved successfully.";
 
             return RedirectToAction(nameof(Index));
         }
 
+
         // =====================================================
         // GET: Download CV
         // =====================================================
 
-        [Permission("JobApplications.DownloadCv")]
         public async Task<IActionResult> DownloadCv(int id)
         {
             var job =
-                await _context.JobApplications
-                    .FindAsync(id);
+                await _context.JobApplications.FindAsync(id);
 
             if (job == null ||
                 job.CvFileData == null ||
@@ -346,11 +734,11 @@ namespace ReceptionSystem.Controllers
                 fileName);
         }
 
+
         // =====================================================
         // GET: Edit
         // =====================================================
 
-        [Permission("JobApplications.Edit")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -380,13 +768,13 @@ namespace ReceptionSystem.Controllers
             return View(job);
         }
 
+
         // =====================================================
         // POST: Edit
         // =====================================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Permission("JobApplications.Edit")]
         public async Task<IActionResult> Edit(
             int id,
             JobApplication jobApplication,
@@ -397,9 +785,10 @@ namespace ReceptionSystem.Controllers
                 return NotFound();
             }
 
-            // =================================================
+
+            // -------------------------------------------------
             // Remove empty Qualifications
-            // =================================================
+            // -------------------------------------------------
 
             jobApplication.Qualifications =
                 jobApplication.Qualifications?
@@ -411,9 +800,10 @@ namespace ReceptionSystem.Controllers
                     .ToList()
                     ?? new List<Qualification>();
 
-            // =================================================
+
+            // -------------------------------------------------
             // Remove empty Courses
-            // =================================================
+            // -------------------------------------------------
 
             jobApplication.Courses =
                 jobApplication.Courses?
@@ -424,24 +814,26 @@ namespace ReceptionSystem.Controllers
                     .ToList()
                     ?? new List<Course>();
 
-            // =================================================
+
+            // -------------------------------------------------
             // Remove empty Experiences
-            // =================================================
+            // -------------------------------------------------
 
             jobApplication.Experiences =
                 jobApplication.Experiences?
                     .Where(e =>
                         !string.IsNullOrWhiteSpace(e.CompanyName)
                         || !string.IsNullOrWhiteSpace(e.JobTitle)
-                        || e.FromDate.HasValue
+                        || e.FromDate != default
                         || e.ToDate.HasValue
                         || !string.IsNullOrWhiteSpace(e.LastSalary))
                     .ToList()
                     ?? new List<Experience>();
 
-            // =================================================
+
+            // -------------------------------------------------
             // Remove empty Computer Skills
-            // =================================================
+            // -------------------------------------------------
 
             jobApplication.ComputerSkills =
                 jobApplication.ComputerSkills?
@@ -450,9 +842,10 @@ namespace ReceptionSystem.Controllers
                     .ToList()
                     ?? new List<ComputerSkill>();
 
-            // =================================================
+
+            // -------------------------------------------------
             // Remove empty Languages
-            // =================================================
+            // -------------------------------------------------
 
             jobApplication.Languages =
                 jobApplication.Languages?
@@ -463,9 +856,10 @@ namespace ReceptionSystem.Controllers
                     .ToList()
                     ?? new List<Language>();
 
-            // =================================================
+
+            // -------------------------------------------------
             // Remove validation errors
-            // =================================================
+            // -------------------------------------------------
 
             var keysToRemove = ModelState.Keys
                 .Where(k =>
@@ -481,23 +875,10 @@ namespace ReceptionSystem.Controllers
                 ModelState.Remove(key);
             }
 
-            // =================================================
-            // Get existing application
-            // =================================================
 
-            var existing =
-                await _context.JobApplications
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(e => e.Id == id);
-
-            if (existing == null)
-            {
-                return NotFound();
-            }
-
-            // =================================================
+            // -------------------------------------------------
             // Validate
-            // =================================================
+            // -------------------------------------------------
 
             if (!ModelState.IsValid)
             {
@@ -509,18 +890,20 @@ namespace ReceptionSystem.Controllers
                 return View(jobApplication);
             }
 
-            // =================================================
-            // Handle CV
-            // =================================================
+
+            // -------------------------------------------------
+            // Handle CV upload
+            // -------------------------------------------------
 
             if (CvFile != null && CvFile.Length > 0)
             {
-                var allowedExtensions = new[]
-                {
-                    ".pdf",
-                    ".doc",
-                    ".docx"
-                };
+                var allowedExtensions =
+                    new[]
+                    {
+                        ".pdf",
+                        ".doc",
+                        ".docx"
+                    };
 
                 var extension =
                     Path.GetExtension(CvFile.FileName)
@@ -554,7 +937,28 @@ namespace ReceptionSystem.Controllers
                 jobApplication.CvContentType =
                     CvFile.ContentType;
             }
-            else
+
+
+            // -------------------------------------------------
+            // Load existing
+            // -------------------------------------------------
+
+            var existing =
+                await _context.JobApplications
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(e => e.Id == id);
+
+            if (existing == null)
+            {
+                return NotFound();
+            }
+
+
+            // -------------------------------------------------
+            // Preserve fields
+            // -------------------------------------------------
+
+            if (CvFile == null || CvFile.Length == 0)
             {
                 jobApplication.CvFileData =
                     existing.CvFileData;
@@ -569,23 +973,13 @@ namespace ReceptionSystem.Controllers
                     existing.CvFilePath;
             }
 
-            // =================================================
-            // Preserve Application Number
-            // =================================================
-
             jobApplication.ApplicationNumber =
                 existing.ApplicationNumber;
 
-            // =================================================
-            // Preserve Application Date
-            // =================================================
 
-            jobApplication.ApplicationDate =
-                existing.ApplicationDate;
-
-            // =================================================
+            // -------------------------------------------------
             // Update
-            // =================================================
+            // -------------------------------------------------
 
             try
             {
@@ -610,6 +1004,7 @@ namespace ReceptionSystem.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
         // =====================================================
         // GET: Manage
         // =====================================================
@@ -621,13 +1016,13 @@ namespace ReceptionSystem.Controllers
                 new { id });
         }
 
+
         // =====================================================
         // POST: Delete
         // =====================================================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Permission("JobApplications.Delete")]
         public async Task<IActionResult> Delete(int id)
         {
             var job =
@@ -649,17 +1044,13 @@ namespace ReceptionSystem.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
         // =====================================================
         // EXPORT TO EXCEL
         // =====================================================
 
-        [Permission("JobApplications.Export")]
         public async Task<IActionResult> ExportToExcel(int id)
         {
-            // =================================================
-            // Load Job Application + ALL Related Data
-            // =================================================
-
             var application =
                 await _context.JobApplications
                     .Include(x => x.Qualifications)
@@ -674,89 +1065,85 @@ namespace ReceptionSystem.Controllers
                 return NotFound();
             }
 
-            // =================================================
-            // Create Workbook
-            // =================================================
-
             using var workbook = new XLWorkbook();
 
+
             // =================================================
-            // Sheet 1 - Main Information
+            // Main Information
             // =================================================
 
-            var worksheet = workbook.Worksheets.Add("طلب التوظيف");
+            var worksheet =
+                workbook.Worksheets.Add("طلب التوظيف");
 
             worksheet.RightToLeft = true;
 
-            // Header row (horizontal)
             worksheet.Cell(1, 1).Value = "رقم الطلب";
-            worksheet.Cell(1, 2).Value = "تاريخ الطلب";
-            worksheet.Cell(1, 3).Value = "الاسم الكامل";
-            worksheet.Cell(1, 4).Value = "الجنس";
-            worksheet.Cell(1, 5).Value = "الجنسية";
-            worksheet.Cell(1, 6).Value = "مكان الولادة";
-            worksheet.Cell(1, 7).Value = "تاريخ الميلاد";
-            worksheet.Cell(1, 8).Value = "الرقم الوطني";
-            worksheet.Cell(1, 9).Value = "الحالة الاجتماعية";
-            worksheet.Cell(1, 10).Value = "العنوان";
-            worksheet.Cell(1, 11).Value = "رقم الهاتف";
-            worksheet.Cell(1, 12).Value = "البريد الإلكتروني";
-            worksheet.Cell(1, 13).Value = "رخصة القيادة";
-            worksheet.Cell(1, 14).Value = "الوظيفة المطلوبة";
-            worksheet.Cell(1, 15).Value = "الراتب المتوقع";
-            worksheet.Cell(1, 16).Value = "تاريخ مباشرة العمل";
-            worksheet.Cell(1, 17).Value = "يعمل حالياً";
-            worksheet.Cell(1, 18).Value = "الحالة الصحية";
-            worksheet.Cell(1, 19).Value = "سوابق قضائية";
-            worksheet.Cell(1, 20).Value = "ملاحظات";
+            worksheet.Cell(1, 2).Value =
+                application.ApplicationNumber;
 
-            // Values row
-            worksheet.Cell(2, 1).Value = application.ApplicationNumber ?? "";
+            worksheet.Cell(2, 1).Value = "تاريخ الطلب";
+            worksheet.Cell(2, 2).Value =
+                application.ApplicationDate;
 
-            worksheet.Cell(2, 2).Value = application.ApplicationDate;
-            worksheet.Cell(2, 2).Style.DateFormat.Format = "yyyy-MM-dd";
+            worksheet.Cell(3, 1).Value = "الاسم الكامل";
+            worksheet.Cell(3, 2).Value =
+                application.FullName;
 
-            worksheet.Cell(2, 3).Value = application.FullName ?? "";
-            worksheet.Cell(2, 4).Value = application.Gender ?? "";
-            worksheet.Cell(2, 5).Value = application.Nationality ?? "";
-            worksheet.Cell(2, 6).Value = application.PlaceOfBirth ?? "";
+            worksheet.Cell(4, 1).Value = "الجنس";
+            worksheet.Cell(4, 2).Value =
+                application.Gender;
 
-            if (application.DateOfBirth.HasValue)
-            {
-                worksheet.Cell(2, 7).Value = application.DateOfBirth.Value;
-                worksheet.Cell(2, 7).Style.DateFormat.Format = "yyyy-MM-dd";
-            }
-            else
-            {
-                worksheet.Cell(2, 7).Value = "";
-            }
+            worksheet.Cell(5, 1).Value = "الجنسية";
+            worksheet.Cell(5, 2).Value =
+                application.Nationality;
 
-            worksheet.Cell(2, 8).Value = application.NationalNumber ?? "";
-            worksheet.Cell(2, 9).Value = application.MaritalStatus ?? "";
-            worksheet.Cell(2, 10).Value = application.Address ?? "";
-            worksheet.Cell(2, 11).Value = application.Phone ?? "";
-            worksheet.Cell(2, 12).Value = application.Email ?? "";
-            worksheet.Cell(2, 13).Value = application.DrivingLicense ?? "";
-            worksheet.Cell(2, 14).Value = application.Position ?? "";
-            worksheet.Cell(2, 15).Value = application.ExpectedSalary ?? "";
+            worksheet.Cell(6, 1).Value = "مكان الولادة";
+            worksheet.Cell(6, 2).Value =
+                application.PlaceOfBirth;
 
-            if (application.AvailableStartDate.HasValue)
-            {
-                worksheet.Cell(2, 16).Value = application.AvailableStartDate.Value;
-                worksheet.Cell(2, 16).Style.DateFormat.Format = "yyyy-MM-dd";
-            }
-            else
-            {
-                worksheet.Cell(2, 16).Value = "";
-            }
+            worksheet.Cell(7, 1).Value = "تاريخ الميلاد";
+            worksheet.Cell(7, 2).Value =
+                application.DateOfBirth;
 
-            worksheet.Cell(2, 17).Value = application.CurrentlyWorking ? "نعم" : "لا";
-            worksheet.Cell(2, 18).Value = application.HealthCondition ?? "";
-            worksheet.Cell(2, 19).Value = application.CriminalRecord ? "نعم" : "لا";
-            worksheet.Cell(2, 20).Value = application.Notes ?? "";
+            worksheet.Cell(8, 1).Value = "الرقم الوطني";
+            worksheet.Cell(8, 2).Value =
+                application.NationalNumber;
+
+            worksheet.Cell(9, 1).Value = "الحالة الاجتماعية";
+            worksheet.Cell(9, 2).Value =
+                application.MaritalStatus;
+
+            worksheet.Cell(10, 1).Value = "العنوان";
+            worksheet.Cell(10, 2).Value =
+                application.Address;
+
+            worksheet.Cell(11, 1).Value = "رقم الهاتف";
+            worksheet.Cell(11, 2).Value =
+                application.Phone;
+
+            worksheet.Cell(12, 1).Value = "البريد الإلكتروني";
+            worksheet.Cell(12, 2).Value =
+                application.Email;
+
+            worksheet.Cell(13, 1).Value = "الوظيفة المطلوبة";
+            worksheet.Cell(13, 2).Value =
+                application.Position;
+
+            worksheet.Cell(14, 1).Value = "الراتب المتوقع";
+            worksheet.Cell(14, 2).Value =
+                application.ExpectedSalary;
+
+            worksheet.Cell(15, 1).Value = "الحالة الصحية";
+            worksheet.Cell(15, 2).Value =
+                application.HealthCondition;
+
+            worksheet.Cell(16, 1).Value = "ملاحظات";
+            worksheet.Cell(16, 2).Value =
+                application.Notes;
+
 
             // =================================================
-            // Sheet 2 - Qualifications
+            // Qualifications
             // =================================================
 
             var qualifications =
@@ -764,53 +1151,33 @@ namespace ReceptionSystem.Controllers
 
             qualifications.RightToLeft = true;
 
-            qualifications.Cell(1, 1).Value =
-                "الدرجة العلمية";
+            qualifications.Cell(1, 1).Value = "الدرجة العلمية";
+            qualifications.Cell(1, 2).Value = "الاختصاص";
+            qualifications.Cell(1, 3).Value = "الجامعة";
+            qualifications.Cell(1, 4).Value = "سنة التخرج";
 
-            qualifications.Cell(1, 2).Value =
-                "الاختصاص";
+            int row = 2;
 
-            qualifications.Cell(1, 3).Value =
-                "الجامعة / المعهد";
-
-            qualifications.Cell(1, 4).Value =
-                "سنة التخرج";
-
-            int qualificationRow = 2;
-
-            if (application.Qualifications != null &&
-                application.Qualifications.Any())
+            foreach (var item in application.Qualifications)
             {
-                foreach (var qualification
-                         in application.Qualifications)
-                {
-                    qualifications.Cell(
-                        qualificationRow, 1).Value =
-                        qualification.Degree ?? "";
+                qualifications.Cell(row, 1).Value =
+                    item.Degree;
 
-                    qualifications.Cell(
-                        qualificationRow, 2).Value =
-                        qualification.Specialization ?? "";
+                qualifications.Cell(row, 2).Value =
+                    item.Specialization;
 
-                    qualifications.Cell(
-                        qualificationRow, 3).Value =
-                        qualification.University ?? "";
+                qualifications.Cell(row, 3).Value =
+                    item.University;
 
-                    qualifications.Cell(
-                        qualificationRow, 4).Value =
-                        qualification.GraduationYear ?? "";
+                qualifications.Cell(row, 4).Value =
+                    item.GraduationYear;
 
-                    qualificationRow++;
-                }
+                row++;
             }
-            else
-            {
-                qualifications.Cell(2, 1).Value =
-                    "لا يوجد مؤهلات علمية";
-            }
+
 
             // =================================================
-            // Sheet 3 - Courses
+            // Courses
             // =================================================
 
             var courses =
@@ -818,45 +1185,29 @@ namespace ReceptionSystem.Controllers
 
             courses.RightToLeft = true;
 
-            courses.Cell(1, 1).Value =
-                "اسم الدورة";
+            courses.Cell(1, 1).Value = "اسم الدورة";
+            courses.Cell(1, 2).Value = "الجهة المنظمة";
+            courses.Cell(1, 3).Value = "المدة";
 
-            courses.Cell(1, 2).Value =
-                "الجهة المنظمة";
+            row = 2;
 
-            courses.Cell(1, 3).Value =
-                "المدة";
-
-            int courseRow = 2;
-
-            if (application.Courses != null &&
-                application.Courses.Any())
+            foreach (var item in application.Courses)
             {
-                foreach (var course in application.Courses)
-                {
-                    courses.Cell(
-                        courseRow, 1).Value =
-                        course.CourseName ?? "";
+                courses.Cell(row, 1).Value =
+                    item.CourseName;
 
-                    courses.Cell(
-                        courseRow, 2).Value =
-                        course.Organization ?? "";
+                courses.Cell(row, 2).Value =
+                    item.Organization;
 
-                    courses.Cell(
-                        courseRow, 3).Value =
-                        course.Duration ?? "";
+                courses.Cell(row, 3).Value =
+                    item.Duration;
 
-                    courseRow++;
-                }
+                row++;
             }
-            else
-            {
-                courses.Cell(2, 1).Value =
-                    "لا توجد دورات";
-            }
+
 
             // =================================================
-            // Sheet 4 - Experiences
+            // Experiences
             // =================================================
 
             var experiences =
@@ -864,90 +1215,45 @@ namespace ReceptionSystem.Controllers
 
             experiences.RightToLeft = true;
 
-            experiences.Cell(1, 1).Value =
-                "الشركة";
+            experiences.Cell(1, 1).Value = "الشركة";
+            experiences.Cell(1, 2).Value = "المسمى الوظيفي";
+            experiences.Cell(1, 3).Value = "من";
+            experiences.Cell(1, 4).Value = "إلى";
+            experiences.Cell(1, 5).Value = "آخر راتب";
 
-            experiences.Cell(1, 2).Value =
-                "المسمى الوظيفي";
+            row = 2;
 
-            experiences.Cell(1, 3).Value =
-                "من تاريخ";
-
-            experiences.Cell(1, 4).Value =
-                "إلى تاريخ";
-
-            experiences.Cell(1, 5).Value =
-                "آخر راتب";
-
-            int experienceRow = 2;
-
-            if (application.Experiences != null &&
-                application.Experiences.Any())
+            foreach (var item in application.Experiences)
             {
-                foreach (var experience
-                         in application.Experiences)
+                experiences.Cell(row, 1).Value =
+                    item.CompanyName;
+
+                experiences.Cell(row, 2).Value =
+                    item.JobTitle;
+
+                experiences.Cell(row, 3).Value =
+                    item.FromDate;
+
+                if (item.ToDate.HasValue)
                 {
-                    experiences.Cell(
-                        experienceRow, 1).Value =
-                        experience.CompanyName ?? "";
-
-                    experiences.Cell(
-                        experienceRow, 2).Value =
-                        experience.JobTitle ?? "";
-
-                    // From Date
-                    if (experience.FromDate.HasValue)
-                    {
-                        experiences.Cell(
-                            experienceRow, 3).Value =
-                            experience.FromDate.Value;
-
-                        experiences.Cell(
-                            experienceRow, 3)
-                            .Style.DateFormat.Format =
-                            "yyyy-MM-dd";
-                    }
-                    else
-                    {
-                        experiences.Cell(
-                            experienceRow, 3).Value =
-                            "";
-                    }
-
-                    // To Date
-                    if (experience.ToDate.HasValue)
-                    {
-                        experiences.Cell(
-                            experienceRow, 4).Value =
-                            experience.ToDate.Value;
-
-                        experiences.Cell(
-                            experienceRow, 4)
-                            .Style.DateFormat.Format =
-                            "yyyy-MM-dd";
-                    }
-                    else
-                    {
-                        experiences.Cell(
-                            experienceRow, 4).Value =
-                            "حتى الآن";
-                    }
-
-                    experiences.Cell(
-                        experienceRow, 5).Value =
-                        experience.LastSalary ?? "";
-
-                    experienceRow++;
+                    experiences.Cell(row, 4).Value =
+                        item.ToDate.Value;
                 }
+                else
+                {
+                    experiences.Cell(row, 4).Value =
+                        "حتى الآن";
+                }
+
+                experiences.Cell(row, 5).Value =
+                    item.LastSalary;
+
+                row++;
             }
-            else
-            {
-                experiences.Cell(2, 1).Value =
-                    "لا توجد خبرات عملية";
-            }
+
 
             // =================================================
-            // Sheet 5 - Languages
+            // Languages
             // =================================================
 
             var languages =
@@ -955,46 +1261,29 @@ namespace ReceptionSystem.Controllers
 
             languages.RightToLeft = true;
 
-            languages.Cell(1, 1).Value =
-                "اللغة";
+            languages.Cell(1, 1).Value = "اللغة";
+            languages.Cell(1, 2).Value = "المحادثة";
+            languages.Cell(1, 3).Value = "الكتابة";
 
-            languages.Cell(1, 2).Value =
-                "التحدث";
+            row = 2;
 
-            languages.Cell(1, 3).Value =
-                "الكتابة";
-
-            int languageRow = 2;
-
-            if (application.Languages != null &&
-                application.Languages.Any())
+            foreach (var item in application.Languages)
             {
-                foreach (var language
-                         in application.Languages)
-                {
-                    languages.Cell(
-                        languageRow, 1).Value =
-                        language.LanguageName ?? "";
+                languages.Cell(row, 1).Value =
+                    item.LanguageName;
 
-                    languages.Cell(
-                        languageRow, 2).Value =
-                        language.Speaking ?? "";
+                languages.Cell(row, 2).Value =
+                    item.Speaking;
 
-                    languages.Cell(
-                        languageRow, 3).Value =
-                        language.Writing ?? "";
+                languages.Cell(row, 3).Value =
+                    item.Writing;
 
-                    languageRow++;
-                }
+                row++;
             }
-            else
-            {
-                languages.Cell(2, 1).Value =
-                    "لا توجد لغات";
-            }
+
 
             // =================================================
-            // Sheet 6 - Computer Skills
+            // Computer Skills
             // =================================================
 
             var skills =
@@ -1002,29 +1291,18 @@ namespace ReceptionSystem.Controllers
 
             skills.RightToLeft = true;
 
-            skills.Cell(1, 1).Value =
-                "المهارة";
+            skills.Cell(1, 1).Value = "المهارة";
 
-            int skillRow = 2;
+            row = 2;
 
-            if (application.ComputerSkills != null &&
-                application.ComputerSkills.Any())
+            foreach (var item in application.ComputerSkills)
             {
-                foreach (var skill
-                         in application.ComputerSkills)
-                {
-                    skills.Cell(
-                        skillRow, 1).Value =
-                        skill.SkillName ?? "";
+                skills.Cell(row, 1).Value =
+                    item.SkillName;
 
-                    skillRow++;
-                }
+                row++;
             }
-            else
-            {
-                skills.Cell(2, 1).Value =
-                    "لا توجد مهارات";
-            }
+
 
             // =================================================
             // Formatting
@@ -1039,52 +1317,27 @@ namespace ReceptionSystem.Controllers
 
                 if (usedRange != null)
                 {
-                    // Header
-                    var headerRow =
-                        sheet.Row(1);
-
-                    headerRow.Style.Font.Bold =
-                        true;
-
-                    // Alignment
                     usedRange.Style.Alignment.Horizontal =
                         XLAlignmentHorizontalValues.Right;
 
-                    usedRange.Style.Alignment.Vertical =
-                        XLAlignmentVerticalValues.Center;
-
-                    // Borders
                     usedRange.Style.Border.OutsideBorder =
                         XLBorderStyleValues.Thin;
 
                     usedRange.Style.Border.InsideBorder =
                         XLBorderStyleValues.Thin;
-
-                    // Wrap text
-                    usedRange.Style.Alignment.WrapText =
-                        true;
-
-                    // Auto width
-                    sheet.Columns()
-                        .AdjustToContents();
                 }
 
-                // Minimum width
-                foreach (var column in sheet.ColumnsUsed())
-                {
-                    if (column.Width < 15)
-                    {
-                        column.Width = 15;
-                    }
-                }
+                sheet.Row(1).Style.Font.Bold = true;
+
+                sheet.Columns().AdjustToContents();
             }
+
 
             // =================================================
             // Create Excel File
             // =================================================
 
-            using var stream =
-                new MemoryStream();
+            using var stream = new MemoryStream();
 
             workbook.SaveAs(stream);
 
@@ -1097,11 +1350,11 @@ namespace ReceptionSystem.Controllers
                 fileName);
         }
 
+
         // =====================================================
         // PRINT JOB APPLICATION
         // =====================================================
 
-        [Permission("JobApplications.Print")]
         public async Task<IActionResult> Print(int id)
         {
             var application =
@@ -1122,3 +1375,4 @@ namespace ReceptionSystem.Controllers
         }
     }
 }
+

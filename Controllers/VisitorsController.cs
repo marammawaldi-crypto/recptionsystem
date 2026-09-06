@@ -1,3 +1,4 @@
+
 using ReceptionSystem.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -5,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using ReceptionSystem.Data;
 using ReceptionSystem.Models;
 using ReceptionSystem.Services;
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -30,15 +32,151 @@ namespace ReceptionSystem.Controllers
         // =====================================================
 
         [Permission("Visitors.View")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+            string? filterColumn,
+            string? filterValue)
         {
-            var visitors = await _context.Visitors
+            var query = _context.Visitors.AsQueryable();
+
+            // =====================================================
+            // الفلترة حسب العمود المختار
+            // =====================================================
+
+            if (!string.IsNullOrWhiteSpace(filterColumn) &&
+                !string.IsNullOrWhiteSpace(filterValue))
+            {
+                switch (filterColumn)
+                {
+                    // -------------------------------------------------
+                    // اسم الزائر
+                    // -------------------------------------------------
+
+                    case "VisitorName":
+
+                        query = query.Where(v =>
+                            v.VisitorName.Contains(filterValue));
+
+                        break;
+
+
+                    // -------------------------------------------------
+                    // تاريخ الزيارة
+                    // -------------------------------------------------
+
+                    case "VisitDate":
+
+                        if (DateTime.TryParse(
+                            filterValue,
+                            out var visitDate))
+                        {
+                            var date = visitDate.Date;
+                            var nextDate = date.AddDays(1);
+
+                            query = query.Where(v =>
+                                v.VisitDate >= date &&
+                                v.VisitDate < nextDate);
+                        }
+
+                        break;
+
+
+                    // -------------------------------------------------
+                    // وقت الدخول
+                    // -------------------------------------------------
+
+                    case "CheckIn":
+
+                        if (TimeSpan.TryParse(
+                            filterValue,
+                            out var checkIn))
+                        {
+                            query = query.Where(v =>
+                                v.CheckIn == checkIn);
+                        }
+
+                        break;
+
+
+                    // -------------------------------------------------
+                    // وقت الخروج
+                    // -------------------------------------------------
+
+                    case "CheckOut":
+
+                        if (TimeSpan.TryParse(
+                            filterValue,
+                            out var checkOut))
+                        {
+                            query = query.Where(v =>
+                                v.CheckOut == checkOut);
+                        }
+
+                        break;
+
+
+                    // -------------------------------------------------
+                    // الوجهة
+                    // -------------------------------------------------
+
+                    case "Destination":
+
+                        query = query.Where(v =>
+                            v.Destination.Contains(filterValue));
+
+                        break;
+
+
+                    // -------------------------------------------------
+                    // رقم الهاتف
+                    // -------------------------------------------------
+
+                    case "Phone":
+
+                        query = query.Where(v =>
+                            v.Phone != null &&
+                            v.Phone.Contains(filterValue));
+
+                        break;
+
+
+                    // -------------------------------------------------
+                    // الغرض
+                    // -------------------------------------------------
+
+                    case "Purpose":
+
+                        query = query.Where(v =>
+                            v.Purpose != null &&
+                            v.Purpose.Contains(filterValue));
+
+                        break;
+
+
+                    // -------------------------------------------------
+                    // الملاحظات
+                    // -------------------------------------------------
+
+                    case "Notes":
+
+                        query = query.Where(v =>
+                            v.Notes != null &&
+                            v.Notes.Contains(filterValue));
+
+                        break;
+                }
+            }
+
+            // =====================================================
+            // جلب البيانات
+            // =====================================================
+
+            var visitors = await query
                 .OrderByDescending(v => v.Id)
                 .ToListAsync();
 
-            // -------------------------------------------------
-            // Check Delete Permission
-            // -------------------------------------------------
+            // =====================================================
+            // التحقق من صلاحية الحذف
+            // =====================================================
 
             var userId = User.FindFirstValue(
                 ClaimTypes.NameIdentifier);
@@ -53,8 +191,14 @@ namespace ReceptionSystem.Controllers
                         "Visitors.Delete");
             }
 
-            // إرسال النتيجة إلى View
             ViewBag.CanDelete = canDelete;
+
+            // =====================================================
+            // الاحتفاظ بقيم الفلترة
+            // =====================================================
+
+            ViewBag.FilterColumn = filterColumn;
+            ViewBag.FilterValue = filterValue;
 
             return View(visitors);
         }
@@ -232,3 +376,4 @@ namespace ReceptionSystem.Controllers
         }
     }
 }
+
